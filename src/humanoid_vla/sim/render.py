@@ -66,3 +66,24 @@ def gl_renderer_name() -> str:
 
     name = GL.glGetString(GL.GL_RENDERER)
     return name.decode() if isinstance(name, bytes) else str(name)
+
+
+def project(
+    model: mujoco.MjModel,
+    data: mujoco.MjData,
+    camera: str,
+    point: np.ndarray,
+    height: int,
+    width: int,
+) -> np.ndarray:
+    """Pixel coordinates (u to the right, v down) of a world point in a camera's image.
+
+    Uses the pinhole model MuJoCo renders with: the camera looks along its -z axis and ``fovy``
+    spans the image height. Only meaningful for points in front of the camera.
+    """
+    cam = model.camera(camera).id
+    rotation = data.cam_xmat[cam].reshape(3, 3)
+    local = rotation.T @ (np.asarray(point, dtype=float) - data.cam_xpos[cam])
+    focal = (height / 2) / np.tan(np.deg2rad(model.cam_fovy[cam]) / 2)
+    depth = -local[2]
+    return np.array([width / 2 + focal * local[0] / depth, height / 2 - focal * local[1] / depth])

@@ -52,11 +52,12 @@ class SceneConfig:
     bin_wall_thickness: float = 0.006
 
     # Head camera: front of the head, pitched down and turned toward the right arm's workspace
-    # so both bins are in view. 66 degrees is close to the RealSense D435's horizontal FOV.
+    # so every block position and both bins are in view with margin (tests/test_scene.py).
+    # 70 degrees is close to the RealSense D435's horizontal FOV.
     head_camera_pos: tuple[float, float, float] = (0.085, 0.0, 0.386)  # in torso_link frame
-    head_camera_pitch_deg: float = 62.0
-    head_camera_yaw_deg: float = -20.0  # negative turns toward the robot's right
-    head_camera_fovy_deg: float = 66.0
+    head_camera_pitch_deg: float = 58.0
+    head_camera_yaw_deg: float = -35.0  # negative turns toward the robot's right
+    head_camera_fovy_deg: float = 70.0
     # External camera for videos and figures (not a policy input).
     scene_camera_pos: tuple[float, float, float] = (1.0, -0.95, 1.30)
     scene_camera_target: tuple[float, float, float] = (0.25, -0.15, 0.90)
