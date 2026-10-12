@@ -1,8 +1,8 @@
 {
   "provenance": {
-    "created_utc": "2026-10-12T05:00:55+00:00",
+    "started_utc": "2026-10-12T05:13:06+00:00",
     "git": {
-      "commit": "25d2c1e4743ce71b7caee5b29f3b6228821808bb",
+      "commit": "90a2f2774a481c0e14467a85de9801c071ec70fe",
       "dirty": false
     },
     "python": "3.12.14",
@@ -35,18 +35,18 @@
   },
   "physics": {
     "timestep_s": 0.002,
-    "steps_per_s": 43613.66537042955,
-    "realtime_factor": 87.2273307408591
+    "steps_per_s": 43461.707637338746,
+    "realtime_factor": 86.9234152746775
   },
   "render_fps": {
-    "scene_256x256_full": 32.5,
+    "scene_256x256_full": 31.2,
     "head_256x256_full": 28.2,
-    "scene_256x256_fast": 92.9,
-    "head_256x256_fast": 90.7,
-    "scene_640x480_full": 21.1,
-    "head_640x480_full": 21.6,
-    "scene_640x480_fast": 84.9,
-    "head_640x480_fast": 83.0
+    "scene_256x256_fast": 90.7,
+    "head_256x256_fast": 97.3,
+    "scene_640x480_full": 21.0,
+    "head_640x480_full": 20.9,
+    "scene_640x480_fast": 80.9,
+    "head_640x480_fast": 82.5
   },
   "gl_renderer": "D3D12 (NVIDIA GeForce RTX 4070)"
 }
