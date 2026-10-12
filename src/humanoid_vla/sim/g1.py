@@ -62,11 +62,22 @@ def resting_arm_pose(side: Side) -> dict[str, float]:
     }
 
 
+GRASP_SITE = "grasp_site"
+
+
 @dataclass(frozen=True)
 class G1Config:
     active_side: Side = "right"
     # Menagerie's standing pelvis height: with straight legs the feet rest on the floor.
     base_pos: tuple[float, float, float] = (0.0, 0.0, 0.793)
+    # Cancel the active arm's and hand's own weight through their actuators, as the real
+    # robot's controller does. The compensation counts against the actuator force limits.
+    gravity_compensation: bool = True
+    # Where a block's center sits in the closed claw grasp (see sim/hand.py), in the wrist-yaw
+    # link frame of the right hand (mirrored in y for the left). The scripted expert moves this
+    # site to the block. Grasp trials succeeded with the block center from 0.5 cm above to 3 cm
+    # below this point, so it sits in the middle of that window.
+    grasp_site_pos: tuple[float, float, float] = (0.095, 0.0825, 0.0)
 
     @property
     def active_joints(self) -> tuple[str, ...]:
@@ -98,6 +109,18 @@ def make_fixed_base(spec: mujoco.MjSpec, cfg: G1Config) -> None:
     # Upstream keyframes describe the full floating-base qpos and no longer apply.
     for key in list(spec.keys):
         spec.delete(key)
+
+    if cfg.gravity_compensation:
+        for name in cfg.active_joints:
+            joint = spec.joint(name)
+            joint.parent.gravcomp = 1.0
+            joint.actgravcomp = 1
+
+    x, y, z = cfg.grasp_site_pos
+    mirror = 1.0 if cfg.active_side == "right" else -1.0
+    spec.body(f"{cfg.active_side}_wrist_yaw_link").add_site(
+        name=GRASP_SITE, pos=[x, mirror * y, z], size=[0.006, 0, 0], rgba=[1, 0.6, 0, 1], group=5
+    )
 
 
 def freeze_hinge(spec: mujoco.MjSpec, joint: mujoco.MjsJoint, angle: float) -> None:
