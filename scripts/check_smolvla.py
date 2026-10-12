@@ -37,7 +37,7 @@ from humanoid_vla.policies.smolvla import (
     make_features,
 )
 from humanoid_vla.sim.g1 import G1Config, arm_joints
-from humanoid_vla.utils.provenance import write_result
+from humanoid_vla.utils.provenance import provenance, write_result
 
 INSTRUCTION = "Put the red block in the left bin."
 IMAGE_HW = (256, 256)
@@ -128,6 +128,7 @@ def main() -> int:
     parser.add_argument("--overfit-steps", type=int, default=200)
     parser.add_argument("--save", action="store_true", help="write results/m0/smolvla_*.json")
     args = parser.parse_args()
+    started = provenance()
 
     if not torch.cuda.is_available():
         print("error: CUDA is not available", file=sys.stderr)
@@ -274,7 +275,7 @@ def main() -> int:
     if args.save:
         suffix = "" if args.cameras == ["head"] else f"_{len(args.cameras)}cam"
         path = RESULTS_DIR / "m0" / f"smolvla_{args.variant}{suffix}.json"
-        write_result(path, result)
+        write_result(path, result, started)
         print(f"Saved {path}")
     return 0 if routing_ok and overfit_ok else 1
 

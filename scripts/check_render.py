@@ -21,7 +21,7 @@ from PIL import Image
 from humanoid_vla.paths import OUTPUTS_DIR, RESULTS_DIR
 from humanoid_vla.sim.render import FAST_QUALITY, FULL_QUALITY, CameraRenderer, gl_renderer_name
 from humanoid_vla.sim.scene import build_model
-from humanoid_vla.utils.provenance import write_result
+from humanoid_vla.utils.provenance import provenance, write_result
 
 GL_ENV_VARS = ("MUJOCO_GL", "GALLIUM_DRIVER", "MESA_D3D12_DEFAULT_ADAPTER_NAME")
 POLICY_SIZE = (256, 256)  # (height, width) candidate policy-camera resolution
@@ -55,6 +55,7 @@ def main() -> int:
     parser.add_argument("--frames", type=int, default=100, help="frames per rendering measurement")
     parser.add_argument("--save", action="store_true", help="write results/m0/render_check.json")
     args = parser.parse_args()
+    started = provenance()
 
     model = build_model()
     data = mujoco.MjData(model)
@@ -94,7 +95,7 @@ def main() -> int:
     print(f"Images: {image_dir}")
     if args.save:
         path = RESULTS_DIR / "m0" / "render_check.json"
-        write_result(path, result)
+        write_result(path, result, started)
         print(f"Saved {path}")
     return 0
 

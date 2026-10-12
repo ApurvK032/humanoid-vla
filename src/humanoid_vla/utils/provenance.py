@@ -13,6 +13,9 @@ from humanoid_vla.gl_env import is_wsl
 from humanoid_vla.paths import REPO_ROOT
 
 TRACKED_PACKAGES = ("mujoco", "numpy", "torch", "lerobot", "transformers", "peft")
+# Paths whose changes can alter a run's behavior. Edits elsewhere (docs, results) do not make a
+# result "dirty".
+CODE_PATHS = ("src", "scripts", "tests", "pyproject.toml", "uv.lock")
 # WSL2 exposes the Windows driver's nvidia-smi here without adding it to PATH.
 _WSL_NVIDIA_SMI = "/usr/lib/wsl/lib/nvidia-smi"
 
@@ -26,7 +29,8 @@ def _run(*cmd: str) -> str | None:
 
 
 def git_state() -> dict[str, Any]:
-    status = _run("git", "status", "--porcelain")
+    """Current commit, and whether code paths have uncommitted or untracked changes."""
+    status = _run("git", "status", "--porcelain", "--", *CODE_PATHS)
     return {"commit": _run("git", "rev-parse", "HEAD"), "dirty": bool(status)}
 
 
@@ -54,8 +58,9 @@ def gpu_info() -> dict[str, str] | None:
 
 
 def provenance() -> dict[str, Any]:
+    """Capture at the start of a run, so later working-tree edits are not attributed to it."""
     return {
-        "created_utc": datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds"),
+        "started_utc": datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds"),
         "git": git_state(),
         "python": platform.python_version(),
         "platform": platform.platform(),
@@ -65,8 +70,8 @@ def provenance() -> dict[str, Any]:
     }
 
 
-def write_result(path: Path, result: dict[str, Any]) -> None:
-    """Write ``result`` as JSON with a ``provenance`` block."""
+def write_result(path: Path, result: dict[str, Any], started: dict[str, Any]) -> None:
+    """Write ``result`` as JSON with the ``provenance()`` captured when the run started."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    payload = {"provenance": provenance(), **result}
+    payload = {"provenance": started, **result}
     path.write_text(json.dumps(payload, indent=2) + "\n")
