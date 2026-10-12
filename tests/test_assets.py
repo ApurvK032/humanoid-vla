@@ -11,7 +11,7 @@ def test_menagerie_is_at_pinned_commit() -> None:
 
 
 def test_missing_checkout_is_rejected(tmp_path: Path) -> None:
-    with pytest.raises(AssetError, match="make assets"):
+    with pytest.raises(AssetError, match="fetch_assets"):
         g1_scene_xml(tmp_path)
 
 
