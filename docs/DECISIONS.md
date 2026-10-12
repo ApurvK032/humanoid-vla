@@ -61,6 +61,31 @@ Without the adapter name Mesa can pick the Ryzen integrated GPU, and under EGL t
 before importing mujoco. Each render call has a fixed overhead from the translation layer, so
 throughput depends mostly on the number of render passes, not resolution (results/m0/render_check.json).
 
+## D-009 SmolVLA from the pretrained base at a pinned Hub revision (2026-10-12)
+
+`lerobot/smolvla_base` is loaded at Hub commit `5e8d12a6` with this project's features replacing
+the base's (SO-100: three cameras, 6-dim state and action). State and action are zero-padded to
+32 inside the model, so every pretrained weight loads (0 missing, 0 unexpected keys). The
+checkpoint was updated on the Hub 5 days before the project started, which is why the revision
+is pinned rather than following `main`.
+
+## D-010 Result provenance is captured when a run starts (2026-10-12)
+
+Result files record the git commit, versions and GPU at the start of the run, and count only
+code paths (`src`, `scripts`, `tests`, `pyproject.toml`, `uv.lock`) as dirty. The first SmolVLA
+results were written at the end of the run and were marked dirty by README edits made while it
+ran; they were discarded and re-run from a clean commit.
+
+## D-011 M3 starts with LeRobot's default fine-tuning, not LoRA (2026-10-12)
+
+The plan preferred a parameter-efficient method after a memory test. The test shows LeRobot's
+default (VLM frozen; action expert and projections train, 100M of 450M parameters) needs 5.6 GiB
+at batch size 32, where throughput already saturates. LoRA (r=64) saves only about 0.5 GiB there,
+because activations rather than optimizer state dominate, and adds inference latency unless
+merged. So M3 uses the default at batch size 32; LoRA stays an ablation, worthwhile mainly for a
+small published artifact. Training the VLM's text layers (7.2 GiB at batch size 32) is the next
+step if instruction following is weak. Measurements: `docs/reports/m0-feasibility.md`.
+
 ## Open questions
 
 | Question | Decide in | Notes |
@@ -69,5 +94,6 @@ throughput depends mostly on the number of render passes, not resolution (result
 | Render profile for datasets: full (shadows) or fast | M1/M2 | Fast is ~3x quicker; shadows are a depth cue for grasping |
 | Gravity compensation for the arm | M1 | If used, route it through the actuators (`actuatorgravcomp`) so force limits still apply |
 | Config system for tasks and experiments | M1 | LeRobot uses draccus |
+| fp32 master weights for the action expert | M3 | LeRobot trains the expert's bfloat16 weights directly; small updates can round away |
 | pi0.5 extension and cloud GPU budget | after M4 | Needs > 22.5 GB for LoRA (openpi) |
 | Project license | before release | Upstream code, models and assets are Apache-2.0 or BSD-3-Clause |

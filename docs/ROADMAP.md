@@ -5,8 +5,8 @@ Living status of the project. The full plan, scope and rationale are in
 
 | Milestone | Status | Exit condition |
 |---|---|---|
-| M0 Feasibility | in progress | Simulation and a genuine SmolVLA parameter update work locally with memory headroom |
-| M1 Scripted expert | not started | Expert reliably picks and places blocks by physical contact across a declared region |
+| M0 Feasibility | done (2026-10-12) | Simulation and a genuine SmolVLA parameter update work locally with memory headroom |
+| M1 Scripted expert | next | Expert reliably picks and places blocks by physical contact across a declared region |
 | M2 Dataset | not started | LeRobot dataset loads, and an episode replays through the same action interface |
 | M3 First policy | not started | Fine-tuned SmolVLA completes held-out layouts in closed loop |
 | M4 Failure suite | not started | Reproducible perturbed scenarios with categorized failures |
@@ -21,11 +21,13 @@ Living status of the project. The full plan, scope and rationale are in
   unmodified model
 - [x] First tabletop scene: table, three blocks, two bins, head and scene cameras
 - [x] Headless GPU rendering under WSL2, with rendering and physics throughput measured
-- [ ] SmolVLA load, forward, backward and optimizer step at this project's shapes: peak VRAM,
+- [x] SmolVLA load, forward, backward and optimizer step at this project's shapes: peak VRAM,
   step time, inference latency
-- [ ] Default fine-tuning versus LoRA: memory and trainable parameters
-- [ ] Tiny overfit check: loss falls and gradients reach only the intended parameters
-- [ ] Feasibility report and re-estimate of the remaining milestones
+- [x] Default fine-tuning versus LoRA versus also training the VLM: memory and trainable
+  parameters
+- [x] Overfit check on a fixed synthetic batch: loss falls and gradients reach only the intended
+  parameters
+- [x] [Feasibility report](reports/m0-feasibility.md) and re-estimate of the remaining milestones
 
 ## M1 Scripted expert (next)
 
