@@ -11,11 +11,13 @@ BINS = ("left", "right")
 @dataclass(frozen=True)
 class LayoutConfig:
     """Region where blocks are placed at reset: a strip in front of the bins that the right arm
-    reaches palm-down without self-collision."""
+    reaches palm-down without self-collision. Its left edge stops at y = -0.11: from closer to
+    the robot's center, carrying a block to the left bin pressed the upper arm against the torso
+    and knocked the block out of the hand (docs/reports/m1-scripted-expert.md)."""
 
-    x_range: tuple[float, float] = (0.18, 0.25)
-    y_range: tuple[float, float] = (-0.32, -0.08)
-    min_distance: float = 0.10  # between block centers; leaves room for the open thumb
+    x_range: tuple[float, float] = (0.17, 0.26)
+    y_range: tuple[float, float] = (-0.33, -0.11)
+    min_distance: float = 0.09  # between block centers; leaves room for the open thumb
     yaw_range: tuple[float, float] = (-np.pi / 4, np.pi / 4)  # cubes repeat every 90 degrees
     max_tries: int = 1000
 
