@@ -1,0 +1,51 @@
+[project]
+name = "humanoid-vla"
+version = "0.0.1"
+description = "Fine-tuning vision-language-action models for language-conditioned Unitree G1 manipulation in MuJoCo, and measuring where they break."
+readme = "README.md"
+authors = [{ name = "Apurv Kushwaha" }]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    # Physics results depend on the exact MuJoCo version: upgrade deliberately, then re-run checks.
+    "mujoco==3.14.0",
+    "numpy>=2.0,<2.3",
+    "pillow>=10",
+]
+
+[dependency-groups]
+dev = ["pre-commit>=4", "pytest>=8", "ruff>=0.16"]
+# PyTorch + CUDA, LeRobot, SmolVLA and PEFT (several GB). CI skips it with `--no-group train`.
+# LeRobot's API changes between minor releases, so it is pinned exactly.
+train = ["lerobot[smolvla,peft]==0.6.1"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/humanoid_vla"]
+
+[tool.uv]
+default-groups = ["dev", "train"]
+# The project targets Linux x86_64 (native or WSL2) with an NVIDIA GPU.
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM", "C4", "PTH", "NPY", "PT", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Entry points configure the OpenGL backend before importing mujoco.
+"scripts/*" = ["E402"]
+"tests/conftest.py" = ["E402"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["humanoid_vla"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers"]
+markers = ["render: needs an OpenGL backend (set MUJOCO_GL=egl, osmesa or glfw)"]
