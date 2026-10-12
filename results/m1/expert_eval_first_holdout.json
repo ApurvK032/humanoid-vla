@@ -1,0 +1,4577 @@
+{
+  "provenance": {
+    "started_utc": "2026-10-12T07:13:55+00:00",
+    "git": {
+      "commit": "92542b26f0126850de2120804331490ca199838b",
+      "dirty": false
+    },
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "wsl": true,
+    "packages": {
+      "mujoco": "3.14.0",
+      "numpy": "2.2.6",
+      "torch": "2.11.0",
+      "lerobot": "0.6.1",
+      "transformers": "5.5.4",
+      "peft": "0.21.2"
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4070",
+      "memory_total": "12282 MiB",
+      "driver": "591.86"
+    }
+  },
+  "config": {
+    "seed_start": 1000,
+    "env": "SortEnv defaults",
+    "expert": "defaults"
+  },
+  "summary": {
+    "episodes": 500,
+    "successes": 494,
+    "success_rate": 0.988,
+    "success_rate_wilson95": [
+      0.9741,
+      0.9945
+    ],
+    "outcomes": {
+      "success": 494,
+      "timeout": 6
+    },
+    "by_instruction": {
+      "blue->left": {
+        "successes": 75,
+        "episodes": 77
+      },
+      "blue->right": {
+        "successes": 80,
+        "episodes": 80
+      },
+      "green->left": {
+        "successes": 95,
+        "episodes": 97
+      },
+      "green->right": {
+        "successes": 76,
+        "episodes": 76
+      },
+      "red->left": {
+        "successes": 90,
+        "episodes": 92
+      },
+      "red->right": {
+        "successes": 78,
+        "episodes": 78
+      }
+    },
+    "success_time_s": {
+      "median": 7.56,
+      "max": 8.88
+    },
+    "episodes_with_ik_failures": 12,
+    "wall_time_s": 134.5
+  },
+  "episodes": [
+    {
+      "seed": 1000,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1001,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1002,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.88,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1003,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1004,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1005,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 5
+    },
+    {
+      "seed": 1006,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1007,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1008,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1009,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1010,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1011,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1012,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1013,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1014,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1015,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1016,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1017,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1018,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.88,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1019,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1020,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1021,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1022,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1023,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1024,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1025,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.88,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1026,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1027,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.88,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1028,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1029,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1030,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1031,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1032,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.2,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1033,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1034,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1035,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1036,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1037,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1038,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1039,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1040,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1041,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1042,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1043,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1044,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1045,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1046,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1047,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1048,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.2,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1049,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1050,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1051,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1052,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1053,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1054,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1055,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1056,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1057,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1058,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1059,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1060,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1061,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1062,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1063,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1064,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1065,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1066,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1067,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 8.68,
+      "ik_failures": 12
+    },
+    {
+      "seed": 1068,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1069,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 4
+    },
+    {
+      "seed": 1070,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1071,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1072,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1073,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1074,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1075,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1076,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1077,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1078,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 8.88,
+      "ik_failures": 6
+    },
+    {
+      "seed": 1079,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1080,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1081,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1082,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1083,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.88,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1084,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 8.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1085,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1086,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1087,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1088,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1089,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1090,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1091,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1092,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1093,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1094,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1095,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1096,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1097,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1098,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1099,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "time_s": 25.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1100,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1101,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1102,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1103,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1104,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1105,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1106,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1107,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1108,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1109,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1110,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1111,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1112,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1113,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 3
+    },
+    {
+      "seed": 1114,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1115,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1116,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1117,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1118,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1119,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1120,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1121,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1122,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1123,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1124,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1125,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1126,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1127,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1128,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1129,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1130,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1131,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1132,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1133,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1134,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1135,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1136,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1137,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1138,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1139,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1140,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1141,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.88,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1142,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1143,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1144,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1145,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1146,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1147,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1148,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.88,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1149,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1150,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1151,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1152,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1153,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1154,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1155,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1156,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.2,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1157,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1158,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1159,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1160,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1161,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1162,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1163,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1164,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1165,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 8.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1166,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1167,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.88,
+      "ik_failures": 5
+    },
+    {
+      "seed": 1168,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1169,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1170,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1171,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1172,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1173,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1174,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1175,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1176,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.24,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1177,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1178,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1179,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1180,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1181,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1182,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1183,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1184,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1185,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1186,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1187,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1188,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1189,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1190,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1191,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1192,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1193,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1194,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1195,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1196,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1197,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1198,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1199,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1200,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1201,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1202,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 8.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1203,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1204,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1205,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1206,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1207,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1208,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1209,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1210,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1211,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1212,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1213,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1214,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1215,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1216,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1217,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1218,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1219,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1220,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1221,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1222,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1223,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1224,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1225,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1226,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1227,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "timeout",
+      "time_s": 25.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1228,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1229,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1230,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1231,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1232,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1233,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1234,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1235,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1236,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.2,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1237,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1238,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1239,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1240,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1241,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1242,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1243,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1244,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.28,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1245,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1246,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1247,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1248,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1249,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1250,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1251,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1252,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1253,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1254,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1255,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1256,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "timeout",
+      "time_s": 25.0,
+      "ik_failures": 4
+    },
+    {
+      "seed": 1257,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1258,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1259,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1260,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1261,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1262,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1263,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1264,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1265,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1266,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1267,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1268,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.92,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1269,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1270,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1271,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1272,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1273,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1274,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1275,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1276,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1277,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1278,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1279,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1280,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1281,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 8.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1282,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1283,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1284,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1285,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1286,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 8.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1287,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1288,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1289,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1290,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1291,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "time_s": 25.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1292,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1293,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1294,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1295,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1296,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1297,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 8.76,
+      "ik_failures": 9
+    },
+    {
+      "seed": 1298,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1299,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1300,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1301,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1302,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1303,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1304,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1305,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1306,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1307,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1308,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1309,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1310,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1311,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1312,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1313,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1314,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1315,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1316,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1317,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.24,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1318,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1319,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1320,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 8.8,
+      "ik_failures": 8
+    },
+    {
+      "seed": 1321,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1322,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1323,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1324,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1325,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1326,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1327,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1328,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1329,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1330,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1331,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1332,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 8.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1333,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1334,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1335,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1336,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1337,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1338,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1339,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1340,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1341,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1342,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1343,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.88,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1344,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1345,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1346,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1347,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1348,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.28,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1349,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1350,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1351,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 8.8,
+      "ik_failures": 6
+    },
+    {
+      "seed": 1352,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1353,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1354,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1355,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1356,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1357,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1358,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1359,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1360,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1361,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1362,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1363,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1364,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1365,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1366,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1367,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1368,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1369,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1370,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1371,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1372,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1373,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1374,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1375,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1376,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1377,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1378,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1379,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1380,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1381,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1382,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1383,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1384,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "timeout",
+      "time_s": 25.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1385,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "timeout",
+      "time_s": 25.0,
+      "ik_failures": 7
+    },
+    {
+      "seed": 1386,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1387,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1388,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1389,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1390,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1391,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1392,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1393,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1394,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1395,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1396,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1397,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1398,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1399,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1400,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1401,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1402,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1403,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1404,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1405,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1406,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1407,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1408,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1409,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1410,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 8.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1411,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1412,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1413,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1414,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1415,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1416,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1417,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1418,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1419,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1420,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1421,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 8.8,
+      "ik_failures": 9
+    },
+    {
+      "seed": 1422,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1423,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1424,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1425,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1426,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.96,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1427,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1428,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1429,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1430,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1431,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1432,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1433,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1434,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1435,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1436,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1437,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1438,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1439,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1440,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1441,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1442,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.28,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1443,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1444,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1445,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1446,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1447,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1448,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1449,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1450,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1451,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.2,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1452,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1453,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.8,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1454,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1455,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1456,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1457,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1458,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1459,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 8.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1460,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1461,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1462,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.0,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1463,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1464,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1465,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1466,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1467,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1468,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1469,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1470,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1471,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1472,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1473,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1474,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1475,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1476,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1477,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.68,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1478,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.28,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1479,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.92,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1480,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.64,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1481,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1482,
+      "instruction": "Put the blue block in the left bin.",
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1483,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1484,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.84,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1485,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1486,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1487,
+      "instruction": "Put the red block in the right bin.",
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 6.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1488,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1489,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1490,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1491,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.56,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1492,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.08,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1493,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.6,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1494,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.16,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1495,
+      "instruction": "Put the green block in the left bin.",
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.72,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1496,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.04,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1497,
+      "instruction": "Put the blue block in the right bin.",
+      "target": "blue",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 8.76,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1498,
+      "instruction": "Put the red block in the left bin.",
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "time_s": 7.52,
+      "ik_failures": 0
+    },
+    {
+      "seed": 1499,
+      "instruction": "Put the green block in the right bin.",
+      "target": "green",
+      "destination": "right",
+      "outcome": "success",
+      "time_s": 7.12,
+      "ik_failures": 0
+    }
+  ]
+}
