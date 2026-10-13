@@ -10,7 +10,7 @@ Before closing and before releasing, the plan waits until the hand has actually 
 tracking lag (arm targets may move at most 2 rad/s) cannot make it grasp or let go early.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 import numpy as np
 
@@ -51,6 +51,37 @@ class ExpertConfig:
     arrive_tolerance: float = 0.01  # m between the grasp site and its target
     max_wait_s: float = 1.0  # longest wait for the hand to arrive before going on anyway
     ik_tolerance: float = 0.005  # m; larger IK errors are counted as failures
+
+
+def randomized(config: ExpertConfig, rng: np.random.Generator) -> ExpertConfig:
+    """A copy of ``config`` with speeds, heights and pauses drawn from modest ranges.
+
+    Recorded demonstrations use one draw per episode, so the policy sees varied but always
+    successful motions rather than one stereotyped trajectory. The ranges stay inside the grasp
+    tolerances measured for the claw (docs/DECISIONS.md, D-013).
+    """
+
+    def scale(value: float, low: float, high: float) -> float:
+        return float(value * rng.uniform(low, high))
+
+    def shift(value: float, low: float, high: float) -> float:
+        return float(value + rng.uniform(low, high))
+
+    return replace(
+        config,
+        approach_height=shift(config.approach_height, -0.02, 0.02),
+        carry_height=shift(config.carry_height, -0.02, 0.02),
+        release_height=shift(config.release_height, -0.005, 0.01),
+        move_speed=scale(config.move_speed, 0.8, 1.2),
+        descend_s=scale(config.descend_s, 0.85, 1.2),
+        close_s=scale(config.close_s, 0.85, 1.2),
+        grip_s=scale(config.grip_s, 0.5, 1.5),
+        lift_s=scale(config.lift_s, 0.85, 1.2),
+        lower_s=scale(config.lower_s, 0.85, 1.2),
+        release_s=scale(config.release_s, 0.85, 1.2),
+        retreat_s=scale(config.retreat_s, 0.85, 1.2),
+        preferred_heading=shift(config.preferred_heading, -np.deg2rad(5), np.deg2rad(5)),
+    )
 
 
 @dataclass(frozen=True)
