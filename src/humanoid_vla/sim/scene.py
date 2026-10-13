@@ -62,6 +62,13 @@ class SceneConfig:
     scene_camera_pos: tuple[float, float, float] = (1.0, -0.95, 1.30)
     scene_camera_target: tuple[float, float, float] = (0.25, -0.15, 0.90)
     scene_camera_fovy_deg: float = 42.0
+    # Wrist camera on a short bracket beside the index finger, in the active hand's wrist-yaw
+    # link frame (x along the fingers, y toward the palm, z to the index side; y is mirrored for
+    # the left hand). It looks at the claw's pinch point, so it sees the block under the palm
+    # during the approach and grasp, which the head camera cannot.
+    wrist_camera_pos: tuple[float, float, float] = (0.07, 0.0, 0.075)
+    wrist_camera_target: tuple[float, float, float] = (0.10, 0.085, 0.0)
+    wrist_camera_fovy_deg: float = 80.0
 
 
 def build_spec(cfg: SceneConfig | None = None) -> mujoco.MjSpec:
@@ -172,6 +179,16 @@ def _add_cameras(spec: mujoco.MjSpec, cfg: SceneConfig) -> None:
     )
     _set_xyaxes(scene, look_at_xyaxes(cfg.scene_camera_pos, cfg.scene_camera_target))
 
+    mirror = np.array([1.0, 1.0 if cfg.robot.active_side == "right" else -1.0, 1.0])
+    wrist_pos = tuple(mirror * cfg.wrist_camera_pos)
+    wrist = spec.body(f"{cfg.robot.active_side}_wrist_yaw_link").add_camera(
+        name="wrist", pos=list(wrist_pos), fovy=cfg.wrist_camera_fovy_deg
+    )
+    # Image up is the back of the hand, which faces the sky in the palm-down grasp.
+    back_of_hand = (0.0, -mirror[1], 0.0)
+    wrist_target = tuple(mirror * cfg.wrist_camera_target)
+    _set_xyaxes(wrist, look_at_xyaxes(wrist_pos, wrist_target, up=back_of_hand))
+
 
 def _set_xyaxes(camera: mujoco.MjsCamera, xyaxes: list[float]) -> None:
     camera.alt.type = mujoco.mjtOrientation.mjORIENTATION_XYAXES
@@ -179,12 +196,15 @@ def _set_xyaxes(camera: mujoco.MjsCamera, xyaxes: list[float]) -> None:
 
 
 def look_at_xyaxes(
-    pos: tuple[float, float, float], target: tuple[float, float, float]
+    pos: tuple[float, float, float],
+    target: tuple[float, float, float],
+    up: tuple[float, float, float] = (0.0, 0.0, 1.0),
 ) -> list[float]:
-    """MuJoCo camera ``xyaxes`` for a camera at ``pos`` looking at ``target`` with +z up."""
+    """MuJoCo camera ``xyaxes`` for a camera at ``pos`` looking at ``target``, in the frame of the
+    body the camera is attached to, with ``up`` pointing toward the top of the image."""
     back = np.asarray(pos, dtype=float) - np.asarray(target, dtype=float)  # cameras look along -z
     back /= np.linalg.norm(back)
-    right = np.cross([0.0, 0.0, 1.0], back)
+    right = np.cross(np.asarray(up, dtype=float), back)
     right /= np.linalg.norm(right)
-    up = np.cross(back, right)
-    return [*right, *up]
+    image_up = np.cross(back, right)
+    return [*right, *image_up]
