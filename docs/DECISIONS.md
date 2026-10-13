@@ -139,13 +139,52 @@ block-aligned heading nearest a preferred heading that turns further left the fu
 block is, following the reach map, clipped to 0-60 degrees. Over the bins the hand turns to 40
 degrees (left) or 0 degrees (right), where IK errors are under 1 mm.
 
+## D-017 Wrist camera on a bracket beside the index finger (2026-10-12)
+
+With the palm facing down, the palm hides the block from any camera on the back of the hand, and
+a camera behind the palm sees mostly the thumb. A camera 7.5 cm out on the index side, aimed at
+the claw's pinch point, shows the block between the fingers and thumb during the approach and
+grasp, and the bin below while carrying. A real build would need a short bracket there.
+
+## D-018 Video decoding with PyAV (2026-10-12)
+
+LeRobot prefers torchcodec, which needs FFmpeg shared libraries installed system-wide; they are
+not available without sudo. LeRobot falls back to PyAV, which bundles its own FFmpeg. Videos are
+encoded with LeRobot's default AV1 settings.
+
+## D-019 Executed actions are float32 (2026-10-12)
+
+Datasets store actions as float32. While the simulator executed float64 targets, replaying a
+recorded episode drifted by up to 0.84 rad in a finger joint, because contact dynamics amplified
+the rounding. The environment now rounds executed targets to float32, and replays reproduce
+every recorded joint state exactly.
+
+## D-020 Datasets rendered with shadows, in parallel workers (2026-10-12)
+
+Rendering dominates recording time (about 17 s of an 18 s episode for two cameras). Under WSL2
+the shadow pass costs about 17 ms per image whatever the shadow-map size or anti-aliasing, so the
+only cheaper option drops shadows, and with them the cue for the hand's height above the table.
+Images keep shadows; recording runs in 4 worker processes (about 9 s per episode), and the main
+process writes episodes in scenario order so the dataset does not depend on the worker count.
+
+## D-021 Varied demonstrations from randomized expert parameters (2026-10-12)
+
+Each recorded episode draws the expert's approach, carry and release heights, speeds and pauses
+from modest ranges inside the grasp tolerances (199/200 development episodes succeed). The draw
+is seeded by the scenario and stored in the manifest.
+
+## D-022 Splits, scenarios and configs (2026-10-12)
+
+Splits own disjoint seed ranges (train from 100000, development from 200000, test from 300000).
+Instructions are balanced in blocks of six layouts, and about a third of layouts are recorded with
+a second instruction, so the policy cannot succeed by ignoring the language. Configs stay plain
+dataclasses, serialized into each dataset's manifest; a config framework is not needed yet.
+
 ## Open questions
 
 | Question | Decide in | Notes |
 |---|---|---|
-| Policy cameras: head only, or head + wrist | M2/M3 | Record both in the dataset and choose by experiment; SmolVLA was pretrained with a top and a wrist camera, and the hand hides the block from the head camera while grasping |
-| Render profile for datasets: full (shadows) or fast | M2 | Fast is ~3x quicker; shadows are a depth cue for grasping |
-| Config system for tasks and experiments | M2 | LeRobot uses draccus |
+| Policy cameras: head only, or head + wrist | M3 | Both are recorded; choose by experiment. SmolVLA was pretrained with a top and a wrist camera |
 | fp32 master weights for the action expert | M3 | LeRobot trains the expert's bfloat16 weights directly; small updates can round away |
 | pi0.5 extension and cloud GPU budget | after M4 | Needs > 22.5 GB for LoRA (openpi) |
 | Project license | before release | Upstream code, models and assets are Apache-2.0 or BSD-3-Clause |
