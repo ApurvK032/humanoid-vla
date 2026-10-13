@@ -62,7 +62,8 @@ def test_arm_targets_are_clipped_and_rate_limited(env: SortEnv) -> None:
     _, _, _, _, info = env.step(far)
     applied = info["applied_action"]
     max_step = env.config.max_joint_speed * env.control_dt
-    np.testing.assert_allclose(np.abs(applied[:7] - env.config.home_arm), max_step, atol=1e-9)
+    # Executed targets are float32 (the dataset precision), so compare at that precision.
+    np.testing.assert_allclose(np.abs(applied[:7] - env.config.home_arm), max_step, atol=1e-6)
     assert applied[7] == 1.0
     for _ in range(100):
         _, _, _, _, info = env.step(far)

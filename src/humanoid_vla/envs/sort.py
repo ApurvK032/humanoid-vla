@@ -5,7 +5,8 @@ the physics substeps in between.
 
 Actions are absolute targets: 7 arm joint angles in radians (``g1.arm_joints`` order) and one
 hand closure in [0, 1] that ``sim.hand`` maps to the seven finger joints. Arm targets are clipped
-to the joint ranges and may move at most ``max_joint_speed`` per second.
+to the joint ranges and may move at most ``max_joint_speed`` per second. Executed targets are
+rounded to float32, the precision datasets store (docs/ACTION_CONTRACT.md).
 
 Observations are what the robot could sense: camera images, the 14 measured arm and hand joint
 angles (``G1Config.active_joints`` order) and the instruction. Object poses are only available
@@ -166,7 +167,11 @@ class SortEnv(gym.Env):
         arm = np.clip(action[:7], self.arm_lower, self.arm_upper)
         max_delta = self.config.max_joint_speed * self.control_dt
         arm = self._arm_target + np.clip(arm - self._arm_target, -max_delta, max_delta)
-        closure = float(np.clip(action[7], 0.0, 1.0))
+        closure = np.clip(action[7], 0.0, 1.0)
+        # Execute float32 values, the precision datasets store, so recorded actions replay
+        # bit-for-bit; contact dynamics would otherwise amplify the rounding.
+        arm = arm.astype(np.float32).astype(np.float64)
+        closure = float(np.float32(closure))
 
         m, d = self.model, self.data
         d.ctrl[self._arm_act] = arm
