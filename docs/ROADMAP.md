@@ -7,8 +7,8 @@ Living status of the project. The full plan, scope and rationale are in
 |---|---|---|
 | M0 Feasibility | done (2026-10-12) | Simulation and a genuine SmolVLA parameter update work locally with memory headroom |
 | M1 Scripted expert | done (2026-10-12) | Expert reliably picks and places blocks by physical contact across a declared region |
-| M2 Dataset | next | LeRobot dataset loads, and an episode replays through the same action interface |
-| M3 First policy | not started | Fine-tuned SmolVLA completes held-out layouts in closed loop |
+| M2 Dataset | done (2026-10-13) | LeRobot dataset loads, and an episode replays through the same action interface |
+| M3 First policy | next | Fine-tuned SmolVLA completes held-out layouts in closed loop |
 | M4 Failure suite | not started | Reproducible perturbed scenarios with categorized failures |
 | M5 Adaptation study | not started | Conditions A/B/C compared on the frozen test split |
 | M6 Release | not started | Verified install, demo checkpoint, dataset and model on the Hub, report, video |
@@ -45,18 +45,34 @@ Details and measurements: [M1 report](reports/m1-scripted-expert.md).
 - [ ] Camera decision, head only or head + wrist: moved to M2/M3 (record both, choose by
   experiment)
 
-## M2 Dataset (next)
+## M2 Dataset
 
-- [ ] Wrist camera on the hand; record head and wrist images
-- [ ] Rendering profile for recorded images (full or fast; decide with a timing measurement)
-- [ ] Action contract document: joint order, units, limits, closure mapping, absolute targets,
-  25 Hz, chunking and normalization from training data only
-- [ ] Episode recorder: synchronized images, measured state, executed actions, instruction,
-  outcome, timestamps, scenario id, expert version and simulator parameters
-- [ ] Variation in the expert's demonstrations (timing and path) so the policy sees more than
-  one stereotyped motion
-- [ ] Export to LeRobot dataset format; failed expert attempts kept in a separate archive
-- [ ] Scenario splits before extracting frames: train, development, frozen test
-- [ ] Pilot of 30-50 successful episodes through the whole data path, then about 150-300
-- [ ] Replay check: an exported episode replays through the action interface to the same outcome
-- [ ] Config system for data collection (LeRobot uses draccus)
+Details and measurements: [M2 report](reports/m2-dataset.md). Contract:
+[ACTION_CONTRACT.md](ACTION_CONTRACT.md).
+
+- [x] Wrist camera beside the index finger; head and wrist images recorded (D-017)
+- [x] Rendering profile: full quality with shadows, recorded in 4 parallel workers (D-020)
+- [x] Action contract document
+- [x] Episode recorder: images, measured state, executed actions, instruction, scenario, expert
+  parameters, checksums; failed attempts archived separately
+- [x] Varied demonstrations from randomized expert parameters (D-021)
+- [x] LeRobot export, loaded back with 50-action chunks and end-of-episode padding
+- [x] Splits by seed range: train, development, frozen test; balanced and paired instructions
+  (D-022)
+- [x] Pilot through the whole data path, then the v1 dataset
+- [x] Replay check: every recorded episode reproduces its joint states exactly and succeeds
+- [x] Config handling: dataclass configs serialized into manifests (no framework needed yet)
+
+## M3 First policy (next)
+
+- [ ] Training run on `g1_sort_v1` with LeRobot's default SmolVLA fine-tuning at batch size 32
+  (D-011), recording base checkpoint, trainable modules, optimizer, effective batch size, seed,
+  update count and dataset identity
+- [ ] Data-loading throughput with PyAV decoding; cache or pre-decode if it starves the GPU
+- [ ] Overfit check on the pilot dataset before the full run
+- [ ] Closed-loop rollout: observe, predict a 50-action chunk, execute N actions, re-observe;
+  reset the policy queue each episode; check denormalization, clipping and image preprocessing
+- [ ] Development rollouts during training to catch a falling loss with broken behavior
+- [ ] Cameras: head only versus head + wrist
+- [ ] Exit: autonomous success on held-out development layouts, a video, and instruction
+  sensitivity measured on identical layouts with different instructions

@@ -18,7 +18,7 @@ dependencies = [
 dev = ["pre-commit>=4", "pytest>=8", "ruff>=0.16"]
 # PyTorch + CUDA, LeRobot, SmolVLA and PEFT (several GB). CI skips it with `--no-group train`.
 # LeRobot's API changes between minor releases, so it is pinned exactly.
-train = ["lerobot[smolvla,peft]==0.6.1"]
+train = ["lerobot[smolvla,peft,dataset]==0.6.1"]
 
 [build-system]
 requires = ["hatchling"]

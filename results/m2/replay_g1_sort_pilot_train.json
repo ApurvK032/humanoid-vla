@@ -1,0 +1,541 @@
+{
+  "provenance": {
+    "started_utc": "2026-10-13T03:39:46+00:00",
+    "git": {
+      "commit": "660613d2b58864311b47c68da00601e9e8e26bec",
+      "dirty": false
+    },
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "wsl": true,
+    "packages": {
+      "mujoco": "3.14.0",
+      "numpy": "2.2.6",
+      "torch": "2.11.0",
+      "lerobot": "0.6.1",
+      "transformers": "5.5.4",
+      "peft": "0.21.2"
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4070",
+      "memory_total": "12282 MiB",
+      "driver": "591.86"
+    }
+  },
+  "dataset": {
+    "name": "g1_sort_pilot",
+    "split": "train",
+    "repo_id": "local/g1_sort_pilot-train",
+    "fps": 25,
+    "layouts": [
+      0,
+      40
+    ],
+    "episodes": 55,
+    "frames": 10370,
+    "rejected": 1,
+    "wall_time_s": 415.8
+  },
+  "contract_problems": [],
+  "episodes_replayed": 55,
+  "episodes_ok": 55,
+  "worst_state_error_rad": 0.0,
+  "state_tolerance_rad": 0.001,
+  "episodes": [
+    {
+      "episode_index": 0,
+      "scenario_id": "train-100000-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 1,
+      "scenario_id": "train-100001-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 2,
+      "scenario_id": "train-100001-blue-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 3,
+      "scenario_id": "train-100002-green-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 4,
+      "scenario_id": "train-100002-blue-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 5,
+      "scenario_id": "train-100003-green-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 6,
+      "scenario_id": "train-100003-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 7,
+      "scenario_id": "train-100004-blue-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 8,
+      "scenario_id": "train-100005-red-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 9,
+      "scenario_id": "train-100006-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 10,
+      "scenario_id": "train-100006-green-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 11,
+      "scenario_id": "train-100007-red-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 12,
+      "scenario_id": "train-100007-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 13,
+      "scenario_id": "train-100008-blue-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 14,
+      "scenario_id": "train-100008-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 15,
+      "scenario_id": "train-100009-green-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 16,
+      "scenario_id": "train-100009-blue-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 17,
+      "scenario_id": "train-100010-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 18,
+      "scenario_id": "train-100011-green-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 19,
+      "scenario_id": "train-100011-blue-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 20,
+      "scenario_id": "train-100012-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 21,
+      "scenario_id": "train-100013-red-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 22,
+      "scenario_id": "train-100014-blue-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 23,
+      "scenario_id": "train-100015-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 24,
+      "scenario_id": "train-100016-green-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 25,
+      "scenario_id": "train-100016-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 26,
+      "scenario_id": "train-100017-green-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 27,
+      "scenario_id": "train-100018-blue-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 28,
+      "scenario_id": "train-100019-green-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 29,
+      "scenario_id": "train-100019-red-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 30,
+      "scenario_id": "train-100020-red-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 31,
+      "scenario_id": "train-100021-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 32,
+      "scenario_id": "train-100022-green-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 33,
+      "scenario_id": "train-100023-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 34,
+      "scenario_id": "train-100024-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 35,
+      "scenario_id": "train-100025-green-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 36,
+      "scenario_id": "train-100026-green-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 37,
+      "scenario_id": "train-100027-red-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 38,
+      "scenario_id": "train-100028-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 39,
+      "scenario_id": "train-100028-blue-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 40,
+      "scenario_id": "train-100030-red-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 41,
+      "scenario_id": "train-100030-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 42,
+      "scenario_id": "train-100031-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 43,
+      "scenario_id": "train-100031-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 44,
+      "scenario_id": "train-100032-blue-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 45,
+      "scenario_id": "train-100032-green-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 46,
+      "scenario_id": "train-100033-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 47,
+      "scenario_id": "train-100034-green-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 48,
+      "scenario_id": "train-100034-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 49,
+      "scenario_id": "train-100035-green-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 50,
+      "scenario_id": "train-100036-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 51,
+      "scenario_id": "train-100037-green-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 52,
+      "scenario_id": "train-100037-blue-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 53,
+      "scenario_id": "train-100038-red-right",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    },
+    {
+      "episode_index": 54,
+      "scenario_id": "train-100039-red-left",
+      "checksum_ok": true,
+      "outcome": "success",
+      "length_matches": true,
+      "max_state_error_rad": 0.0,
+      "ok": true
+    }
+  ]
+}

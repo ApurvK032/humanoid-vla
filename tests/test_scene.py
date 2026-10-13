@@ -19,7 +19,14 @@ def simulate(model: mujoco.MjModel, seconds: float) -> mujoco.MjData:
 
 
 def test_scene_has_policy_and_video_cameras(model: mujoco.MjModel) -> None:
-    assert {model.camera(i).name for i in range(model.ncam)} == {"head", "scene"}
+    assert {model.camera(i).name for i in range(model.ncam)} == {"head", "wrist", "scene"}
+
+
+def test_wrist_camera_looks_at_the_grasp_site(model: mujoco.MjModel) -> None:
+    data = mujoco.MjData(model)
+    mujoco.mj_forward(model, data)
+    uv = project(model, data, "wrist", data.site("grasp_site").xpos, 256, 256) / 256
+    np.testing.assert_allclose(uv, [0.5, 0.5], atol=0.05)
 
 
 def test_blocks_settle_on_table(model: mujoco.MjModel, scene_cfg: SceneConfig) -> None:

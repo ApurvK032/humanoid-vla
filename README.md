@@ -11,12 +11,13 @@ robust.
 *The scripted expert placing a block in the bin it was asked for, by physical contact: scene
 camera (left) and the head camera a policy will see (right).*
 
-**Status (2026-10-12):** Milestones 0 and 1 are complete. The simulated G1 sorts blocks with a
-scripted expert that succeeds in 499 of 500 held-out layouts
-([M1 report](docs/reports/m1-scripted-expert.md)), and SmolVLA fine-tuning fits on one RTX 4070
-([M0 report](docs/reports/m0-feasibility.md)). Next is Milestone 2: recording the expert's
-demonstrations as a LeRobot dataset. There is no trained policy yet. Numbers, videos and claims
-are added only once measured.
+**Status (2026-10-13):** Milestones 0-2 are complete. A scripted expert sorts blocks in 499 of
+500 held-out layouts ([M1 report](docs/reports/m1-scripted-expert.md)), and its demonstrations
+are recorded as a LeRobot dataset of 300 training episodes with head and wrist
+cameras, every one of which replays exactly ([M2 report](docs/reports/m2-dataset.md)). SmolVLA
+fine-tuning fits on one RTX 4070 ([M0 report](docs/reports/m0-feasibility.md)). Next is
+Milestone 3: fine-tuning SmolVLA on the dataset. There is no trained policy yet. Numbers,
+videos and claims are added only once measured.
 
 ## Quick start
 
@@ -51,7 +52,7 @@ flowchart LR
 |---|---|
 | Robot | Unitree G1 from [MuJoCo Menagerie](https://github.com/google-deepmind/mujoco_menagerie/tree/main/unitree_g1) (`g1_with_hands`), fixed base; the right arm (7 joints) and its Dex3 three-finger hand (7 joints) are active, every other joint is frozen |
 | Task | "Put the {red, green, blue} block in the {left, right} bin.": three 5 cm blocks placed at random, two bins |
-| Observations | 256x256 head-camera RGB (a wrist camera will be recorded too), 14 arm and hand joint angles, instruction text |
+| Observations | 256x256 RGB from a head camera and a wrist camera, 14 arm and hand joint angles, instruction text |
 | Actions | At 25 Hz: 7 arm joint targets (limited to 2 rad/s) and 1 hand-closure value that drives a two-stage finger synergy |
 | Policy | [SmolVLA](https://huggingface.co/docs/lerobot/smolvla) (450M) with [LeRobot](https://github.com/huggingface/lerobot) and PyTorch; default fine-tuning compared with LoRA |
 | Simulator | MuJoCo 3.14 with a Gymnasium-style wrapper |
@@ -69,6 +70,12 @@ expert reads block positions from the simulator, which the learned policy never 
 through the same 25 Hz interface the policy will use. Getting there meant a palm-down "claw"
 grasp that suits the Dex3 hand, a layout inside the arm's collision-free reach, and waiting for
 the arm before grasping or releasing ([M1 report](docs/reports/m1-scripted-expert.md)).
+
+**Dataset (M2).** `g1_sort_v1` holds 300 training episodes (56,364 frames,
+38 minutes of demonstrations) and 55 development episodes in LeRobot format,
+with balanced instructions and some layouts recorded under two instructions. Replaying every
+episode's recorded actions reproduces its joint states exactly, which checks that observations
+and actions are aligned and mean what the [action contract](docs/ACTION_CONTRACT.md) says.
 
 **Compute (M0).** On one RTX 4070 (12 GB) under WSL2, from [`results/m0/`](results/m0/):
 
@@ -116,7 +123,7 @@ completion time, inference latency, simulation throughput and peak VRAM.
   within 12 GB
 - [x] **M1 Scripted expert:** physical-contact pick and place with seeded
   resets and labeled outcomes
-- [ ] **M2 Dataset:** LeRobot-format dataset with a documented action
+- [x] **M2 Dataset:** LeRobot-format dataset with a documented action
   contract, scenario splits and a replay check
 - [ ] **M3 First policy:** fine-tuned SmolVLA completing held-out layouts in
   closed loop
@@ -149,6 +156,7 @@ results/            committed measurements, each with git commit, versions and G
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Milestone status and next tasks |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Decision log and open questions |
 | [docs/RUNBOOK.md](docs/RUNBOOK.md) | Setup, commands, troubleshooting |
+| [docs/ACTION_CONTRACT.md](docs/ACTION_CONTRACT.md) | What every recorded observation and action value means |
 | [docs/PROJECT_PLAN.md](docs/PROJECT_PLAN.md) | Original plan, scope and rationale |
 | [docs/reports/](docs/reports/) | Milestone reports |
 | [THIRD_PARTY.md](THIRD_PARTY.md) | Upstream code, models and assets, with pins and licenses |

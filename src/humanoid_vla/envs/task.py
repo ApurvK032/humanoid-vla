@@ -43,8 +43,11 @@ def sample_task(
     """Sample block positions and an instruction. Fix ``target`` or ``destination`` to balance
     a dataset across instructions."""
     layout = layout or LayoutConfig()
-    target = target or str(rng.choice(COLORS))
-    destination = destination or str(rng.choice(BINS))
+    # Always draw the instruction, even when it is fixed, so a seed gives the same layout under
+    # every instruction (and the same layouts as the M1 evaluations, which fixed nothing).
+    drawn_target, drawn_destination = str(rng.choice(COLORS)), str(rng.choice(BINS))
+    target = target or drawn_target
+    destination = destination or drawn_destination
     if target not in COLORS or destination not in BINS:
         raise ValueError(f"unknown target {target!r} or destination {destination!r}")
 
