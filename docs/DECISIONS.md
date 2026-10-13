@@ -86,14 +86,66 @@ merged. So M3 uses the default at batch size 32; LoRA stays an ablation, worthwh
 small published artifact. Training the VLM's text layers (7.2 GiB at batch size 32) is the next
 step if instruction following is weak. Measurements: `docs/reports/m0-feasibility.md`.
 
+## D-012 Arm gravity compensation through the actuators (2026-10-12)
+
+The active arm and hand bodies use MuJoCo gravity compensation routed through their actuators
+(`gravcomp` plus `actuatorgravcomp`), as the real G1's arm controller compensates gravity.
+Position targets hold without sag, and the compensation counts against the actuators' torque
+limits. Objects held in the hand are not compensated.
+
+## D-013 Grasp: palm-down claw pinch with a two-stage synergy (2026-10-12)
+
+A fingers-down grasp cannot work: the Dex3 fingers reach about 22 cm from the wrist and the thumb
+about 13 cm, so open fingers hit the table before the thumb meets the block. The palm-down
+"claw" works: the index and middle fingers fold down in front of the block and the thumb sweeps
+forward behind it. In grasp trials on 5 cm blocks it lifted the block with grasp-height errors
+from -3 to +0.5 cm, ±1.5 cm along and ±1 cm across the approach, and ±30 degrees of block yaw.
+
+One closure value in [0, 1] drives all seven finger joints in two stages: fingers first, then the
+thumb. Closing all joints at once let the thumb push blocks out before the fingers formed a
+wall. Pre-curling the fingers before descending stopped them sweeping into nearby bins, and
+opening thumb-first stopped releases from flinging blocks over a bin's far wall. Blocks grew from
+4 to 5 cm so both fingers land on the front face.
+
+## D-014 Layout inside the arm's collision-free reach; head camera aimed at it (2026-10-12)
+
+IK ignores collisions. Reaching the first layout's left bin needed the right upper arm to fold
+across the chest, where it genuinely hits the torso. A reach map that rejects IK solutions coming
+within 1 cm of self-contact puts the right arm's palm-down workspace in a band to the right of
+the head's forward direction: y from about -0.44 to 0.04 m, x up to about 0.42 m.
+
+The bins therefore sit behind the block strip (x = 0.40 m, y = -0.06 m "left" and -0.30 m
+"right"), and blocks spawn in x 0.18-0.25 m, y -0.32 to -0.08 m with at least 10 cm between
+centers. The G1 has no neck joint, so the simulated head camera is mounted turned 20 degrees right
+and pitched 62 degrees down with a 66-degree field of view (near the D435's horizontal FOV),
+which keeps both bins and all blocks in view.
+
+## D-015 Control interface (2026-10-12)
+
+Physics steps every 2 ms (Menagerie's default) and the policy acts at 25 Hz, so each action is
+held for exactly 20 physics steps; a 50-action SmolVLA chunk spans 2 s. An action is 7 absolute
+arm joint targets in radians, clipped to the joint limits and to 2 rad/s, plus one hand closure
+in [0, 1]. The policy observes a 256x256 head-camera image, the 14 measured arm and hand joint
+angles, and the instruction. The environment reports the executed (clipped) action with every
+step, for recording.
+
+## D-016 Scripted expert (2026-10-12)
+
+The expert plans straight-line moves of a grasp site on the hand, palm-down, and solves damped
+least-squares IK every control step, warm-started from the last solution with an exact null-space
+pull toward the home posture. It waits (at most 1 s) for the hand to arrive before closing and
+before releasing, because the 2 rad/s limit makes the arm lag fast plans. The grasp heading is the
+block-aligned heading nearest a preferred heading that turns further left the further left the
+block is, following the reach map, clipped to 0-60 degrees. Over the bins the hand turns to 40
+degrees (left) or 0 degrees (right), where IK errors are under 1 mm.
+
 ## Open questions
 
 | Question | Decide in | Notes |
 |---|---|---|
-| Policy cameras: head only, or head + wrist | M1 | SmolVLA was pretrained with a top and a wrist camera |
-| Render profile for datasets: full (shadows) or fast | M1/M2 | Fast is ~3x quicker; shadows are a depth cue for grasping |
-| Gravity compensation for the arm | M1 | If used, route it through the actuators (`actuatorgravcomp`) so force limits still apply |
-| Config system for tasks and experiments | M1 | LeRobot uses draccus |
+| Policy cameras: head only, or head + wrist | M2/M3 | Record both in the dataset and choose by experiment; SmolVLA was pretrained with a top and a wrist camera, and the hand hides the block from the head camera while grasping |
+| Render profile for datasets: full (shadows) or fast | M2 | Fast is ~3x quicker; shadows are a depth cue for grasping |
+| Config system for tasks and experiments | M2 | LeRobot uses draccus |
 | fp32 master weights for the action expert | M3 | LeRobot trains the expert's bfloat16 weights directly; small updates can round away |
 | pi0.5 extension and cloud GPU budget | after M4 | Needs > 22.5 GB for LoRA (openpi) |
 | Project license | before release | Upstream code, models and assets are Apache-2.0 or BSD-3-Clause |

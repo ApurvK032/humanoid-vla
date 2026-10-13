@@ -13,6 +13,7 @@ MENAGERIE_URL = "https://github.com/google-deepmind/mujoco_menagerie.git"
 MENAGERIE_COMMIT = "71f066ad0be9cd271f7ed58c030243ef157af9f4"
 MENAGERIE_DIR = THIRD_PARTY_DIR / "mujoco_menagerie"
 G1_DIR = MENAGERIE_DIR / "unitree_g1"
+FETCH_HINT = "Run `uv run python scripts/fetch_assets.py`."
 
 
 class AssetError(RuntimeError):
@@ -31,9 +32,9 @@ def g1_scene_xml(menagerie_dir: Path = MENAGERIE_DIR) -> Path:
     """Path to Menagerie's G1-with-hands scene, after checking it is at the pinned commit."""
     head = menagerie_head(menagerie_dir)
     if head is None:
-        raise AssetError(f"Menagerie not found at {menagerie_dir}. Run `make assets`.")
+        raise AssetError(f"Menagerie not found at {menagerie_dir}. {FETCH_HINT}")
     if head != MENAGERIE_COMMIT:
         raise AssetError(
-            f"Menagerie is at {head}, expected pinned commit {MENAGERIE_COMMIT}. Run `make assets`."
+            f"Menagerie is at {head}, expected pinned commit {MENAGERIE_COMMIT}. {FETCH_HINT}"
         )
     return menagerie_dir / "unitree_g1" / "scene_with_hands.xml"

@@ -7,16 +7,16 @@ bin". It then measures where the policy breaks under camera, latency and
 actuator errors, and tests whether targeted training data makes it more
 robust.
 
-![Fixed-base G1 at the sorting table: scene camera (left) and head camera (right)](docs/media/m0_scene.jpg)
-*Milestone 0 scene: fixed-base G1 with the right arm and Dex3 hand active. Left: scene camera
-for videos. Right: head camera, the candidate policy input. Layout and arm pose are tuned in
-Milestone 1.*
+![The scripted expert sorting a block: scene camera (left) and the robot's head camera (right)](docs/media/m1_expert.gif)
+*The scripted expert placing a block in the bin it was asked for, by physical contact: scene
+camera (left) and the head camera a policy will see (right).*
 
-**Status (2026-10-12):** Milestone 0 (feasibility) is complete. The scene, headless GPU
-rendering and SmolVLA fine-tuning steps run locally on one RTX 4070 (12 GB); see the
-[feasibility report](docs/reports/m0-feasibility.md). Next is Milestone 1, a scripted grasping
-expert. There is no trained policy or task result yet. Numbers, videos and claims are added only
-once measured.
+**Status (2026-10-12):** Milestones 0 and 1 are complete. The simulated G1 sorts blocks with a
+scripted expert that succeeds in 499 of 500 held-out layouts
+([M1 report](docs/reports/m1-scripted-expert.md)), and SmolVLA fine-tuning fits on one RTX 4070
+([M0 report](docs/reports/m0-feasibility.md)). Next is Milestone 2: recording the expert's
+demonstrations as a LeRobot dataset. There is no trained policy yet. Numbers, videos and claims
+are added only once measured.
 
 ## Quick start
 
@@ -24,13 +24,14 @@ Requires Linux x86_64 or WSL2, an NVIDIA GPU, and [uv](https://docs.astral.sh/uv
 
 ```bash
 git clone https://github.com/ApurvK032/humanoid-vla.git && cd humanoid-vla
-make setup          # Python 3.12 environment, git hooks, pinned G1 model
-make test           # simulation and interface tests
-make check-render   # rendering and physics throughput; images in outputs/
-make check-smolvla  # SmolVLA memory, training-step time and inference latency
+uv sync --locked                                  # Python 3.12, MuJoCo, PyTorch, LeRobot
+uv run python scripts/fetch_assets.py             # pinned Unitree G1 model
+uv run pytest                                     # simulation, interface and expert tests
+uv run python scripts/run_expert.py --videos 1    # scripted expert on held-out layouts
 ```
 
-Setup details and troubleshooting are in the [runbook](docs/RUNBOOK.md).
+Each step has a `make` shortcut. Setup details and troubleshooting are in the
+[runbook](docs/RUNBOOK.md).
 
 ## Pipeline
 
@@ -49,9 +50,9 @@ flowchart LR
 | | |
 |---|---|
 | Robot | Unitree G1 from [MuJoCo Menagerie](https://github.com/google-deepmind/mujoco_menagerie/tree/main/unitree_g1) (`g1_with_hands`), fixed base; the right arm (7 joints) and its Dex3 three-finger hand (7 joints) are active, every other joint is frozen |
-| Task | Instruction-conditioned block sorting: three colored blocks, two bins |
-| Observations | Head-camera RGB (a wrist camera is under consideration), arm and hand joint positions, instruction text |
-| Actions | 7 arm joint-position targets and 1 hand-closure value mapped to a finger-joint synergy |
+| Task | "Put the {red, green, blue} block in the {left, right} bin.": three 5 cm blocks placed at random, two bins |
+| Observations | 256x256 head-camera RGB (a wrist camera will be recorded too), 14 arm and hand joint angles, instruction text |
+| Actions | At 25 Hz: 7 arm joint targets (limited to 2 rad/s) and 1 hand-closure value that drives a two-stage finger synergy |
 | Policy | [SmolVLA](https://huggingface.co/docs/lerobot/smolvla) (450M) with [LeRobot](https://github.com/huggingface/lerobot) and PyTorch; default fine-tuning compared with LoRA |
 | Simulator | MuJoCo 3.14 with a Gymnasium-style wrapper |
 | Compute | One RTX 4070 (12 GB) under WSL2 |
@@ -60,9 +61,16 @@ The scripted expert and the evaluator may read simulator object poses; the
 learned policy never does. Grasps are physical contact. Objects are not welded
 to the hand.
 
-## Milestone 0 measurements
+## Results so far
 
-On one RTX 4070 (12 GB) under WSL2, from [`results/m0/`](results/m0/):
+**Scripted expert (M1).** 499 of 500 episodes succeed on held-out layouts
+(99.8%, 95% interval 98.9%-100.0%); a typical episode takes 7.56 s. The
+expert reads block positions from the simulator, which the learned policy never sees, and acts
+through the same 25 Hz interface the policy will use. Getting there meant a palm-down "claw"
+grasp that suits the Dex3 hand, a layout inside the arm's collision-free reach, and waiting for
+the arm before grasping or releasing ([M1 report](docs/reports/m1-scripted-expert.md)).
+
+**Compute (M0).** On one RTX 4070 (12 GB) under WSL2, from [`results/m0/`](results/m0/):
 
 - **Physics:** 87x real time for the tabletop scene.
 - **Rendering:** about 30 fps per 256x256 camera image at full quality, or over 90 fps without
@@ -106,7 +114,7 @@ completion time, inference latency, simulation throughput and peak VRAM.
 
 - [x] **M0 Feasibility:** scene, headless GPU rendering, SmolVLA training step and inference
   within 12 GB
-- [ ] **M1 Scripted expert:** physical-contact pick and place with seeded
+- [x] **M1 Scripted expert:** physical-contact pick and place with seeded
   resets and labeled outcomes
 - [ ] **M2 Dataset:** LeRobot-format dataset with a documented action
   contract, scenario splits and a replay check
@@ -128,8 +136,8 @@ Task-level status is in [docs/ROADMAP.md](docs/ROADMAP.md). Planned extensions:
 ## Repository layout
 
 ```text
-src/humanoid_vla/   simulation (sim/), policy loading (policies/), provenance (utils/)
-scripts/            entry points: asset fetch and checks
+src/humanoid_vla/   simulation (sim/), environment (envs/), expert and SmolVLA (policies/), utils/
+scripts/            entry points: asset fetch, checks, expert evaluation
 tests/              behavior and interface tests
 docs/               plan, roadmap, decisions, runbook, reports
 results/            committed measurements, each with git commit, versions and GPU

@@ -1,8 +1,11 @@
+import itertools
+
 import mujoco
 import numpy as np
 import pytest
 
-from humanoid_vla.sim.render import FAST_QUALITY, CameraRenderer
+from humanoid_vla.envs.task import LayoutConfig
+from humanoid_vla.sim.render import FAST_QUALITY, CameraRenderer, project
 from humanoid_vla.sim.scene import SceneConfig, look_at_xyaxes
 
 
@@ -55,3 +58,42 @@ def test_cameras_render_non_blank_images(model: mujoco.MjModel) -> None:
             image = renderer.render(data, camera)
             assert image.shape == (64, 64, 3)
             assert image.std() > 5.0, camera
+
+
+def test_head_camera_sees_every_block_position_and_both_bins(
+    model: mujoco.MjModel, scene_cfg: SceneConfig
+) -> None:
+    """The policy must see its target: every corner of the block region (with the cube rotated
+    to its widest) and every bin rim corner must project inside the image with a 5% margin."""
+    data = mujoco.MjData(model)
+    mujoco.mj_forward(model, data)
+    layout = LayoutConfig()
+    top = scene_cfg.table_height + 2 * scene_cfg.block_half_size
+    reach = scene_cfg.block_half_size * np.sqrt(2)
+    points = [
+        (x + dx, y + dy, top)
+        for x, y in itertools.product(layout.x_range, layout.y_range)
+        for dx, dy in itertools.product((-reach, reach), repeat=2)
+    ]
+    outer = scene_cfg.bin_inner_half_size + scene_cfg.bin_wall_thickness
+    rim = scene_cfg.table_height + scene_cfg.bin_wall_thickness + scene_cfg.bin_wall_height
+    for bx, by in scene_cfg.bin_xy.values():
+        points += [(bx + sx * outer, by + sy * outer, rim) for sx in (-1, 1) for sy in (-1, 1)]
+    uv = np.array([project(model, data, "head", p, 256, 256) for p in points]) / 256
+    assert uv.min() > 0.05
+    assert uv.max() < 0.95
+
+
+@pytest.mark.render
+def test_projection_matches_the_rendered_image(
+    model: mujoco.MjModel, scene_cfg: SceneConfig
+) -> None:
+    data = mujoco.MjData(model)
+    mujoco.mj_forward(model, data)
+    with CameraRenderer(model, 256, 256, quality=FAST_QUALITY) as renderer:
+        image = renderer.render(data, "head").astype(int)
+    top_center = data.body("block_red").xpos + np.array([0.0, 0.0, scene_cfg.block_half_size])
+    u, v = np.round(project(model, data, "head", top_center, 256, 256)).astype(int)
+    r, g, b = image[v, u]
+    assert r > g + 60
+    assert r > b + 60

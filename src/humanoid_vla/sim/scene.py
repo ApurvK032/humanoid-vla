@@ -30,32 +30,38 @@ class SceneConfig:
     table_height: float = 0.78  # top surface z
     table_thickness: float = 0.03
 
-    block_half_size: float = 0.02  # 4 cm cubes
+    # 5 cm cubes: wide enough that both fingers of the claw grasp land on the front face.
+    block_half_size: float = 0.025
     block_mass: float = 0.05
-    # Initial block positions (x, y) on the table; Milestone 1 replaces these with seeded resets.
+    # Default block positions (x, y); environments place blocks at reset.
     block_xy: dict[str, tuple[float, float]] = field(
         default_factory=lambda: {
-            "red": (0.28, -0.04),
-            "green": (0.34, -0.12),
-            "blue": (0.26, -0.20),
+            "red": (0.22, -0.10),
+            "green": (0.22, -0.20),
+            "blue": (0.22, -0.30),
         }
     )
 
+    # Bins behind the block strip. Both sit inside the region the right arm reaches palm-down
+    # without its upper arm touching the torso (docs/DECISIONS.md, D-014).
     bin_xy: dict[str, tuple[float, float]] = field(
-        default_factory=lambda: {"left": (0.32, 0.14), "right": (0.32, -0.36)}
+        default_factory=lambda: {"left": (0.40, -0.06), "right": (0.40, -0.30)}
     )
-    bin_inner_half_size: float = 0.065
+    bin_inner_half_size: float = 0.055
     bin_wall_height: float = 0.05
     bin_wall_thickness: float = 0.006
 
-    # Head camera: front of the head, pitched down toward the table.
+    # Head camera: front of the head, pitched down and turned toward the right arm's workspace
+    # so every block position and both bins are in view with margin (tests/test_scene.py).
+    # 70 degrees is close to the RealSense D435's horizontal FOV.
     head_camera_pos: tuple[float, float, float] = (0.085, 0.0, 0.386)  # in torso_link frame
-    head_camera_pitch_deg: float = 60.0
-    head_camera_fovy_deg: float = 58.0
+    head_camera_pitch_deg: float = 58.0
+    head_camera_yaw_deg: float = -35.0  # negative turns toward the robot's right
+    head_camera_fovy_deg: float = 70.0
     # External camera for videos and figures (not a policy input).
-    scene_camera_pos: tuple[float, float, float] = (1.25, -1.0, 1.45)
-    scene_camera_target: tuple[float, float, float] = (0.22, -0.08, 0.82)
-    scene_camera_fovy_deg: float = 40.0
+    scene_camera_pos: tuple[float, float, float] = (1.0, -0.95, 1.30)
+    scene_camera_target: tuple[float, float, float] = (0.25, -0.15, 0.90)
+    scene_camera_fovy_deg: float = 42.0
 
 
 def build_spec(cfg: SceneConfig | None = None) -> mujoco.MjSpec:
@@ -65,6 +71,10 @@ def build_spec(cfg: SceneConfig | None = None) -> mujoco.MjSpec:
     # Offscreen framebuffer bounds the largest image any camera can render.
     spec.visual.global_.offwidth = 1280
     spec.visual.global_.offheight = 960
+    # Contact settings MuJoCo recommends for grasping: elliptic friction cones and a high
+    # impedance ratio, which make frictional contacts much less prone to slip.
+    spec.option.cone = mujoco.mjtCone.mjCONE_ELLIPTIC
+    spec.option.impratio = 10.0
     make_fixed_base(spec, cfg.robot)
     _add_table(spec, cfg)
     _add_bins(spec, cfg)
@@ -148,11 +158,14 @@ def _add_blocks(spec: mujoco.MjSpec, cfg: SceneConfig) -> None:
 
 def _add_cameras(spec: mujoco.MjSpec, cfg: SceneConfig) -> None:
     pitch = np.deg2rad(cfg.head_camera_pitch_deg)
+    yaw = np.deg2rad(cfg.head_camera_yaw_deg)
     head = spec.body("torso_link").add_camera(
         name="head", pos=list(cfg.head_camera_pos), fovy=cfg.head_camera_fovy_deg
     )
-    # Looking along +x of the torso, pitched down: image right is -y, image up tilts toward +x.
-    _set_xyaxes(head, [0, -1, 0, np.sin(pitch), 0, np.cos(pitch)])
+    # The torso frame is axis-aligned with the world while the waist joints are frozen at zero.
+    view = np.array([np.cos(pitch) * np.cos(yaw), np.cos(pitch) * np.sin(yaw), -np.sin(pitch)])
+    pos = np.asarray(cfg.head_camera_pos)
+    _set_xyaxes(head, look_at_xyaxes(tuple(pos), tuple(pos + view)))
 
     scene = spec.worldbody.add_camera(
         name="scene", pos=list(cfg.scene_camera_pos), fovy=cfg.scene_camera_fovy_deg

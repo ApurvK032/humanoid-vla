@@ -21,12 +21,19 @@ src/humanoid_vla/
   gl_env.py           OpenGL backend defaults; call before importing mujoco
   paths.py            repo paths (third_party/, outputs/, results/)
   sim/assets.py       pinned Menagerie commit and checked asset paths
-  sim/g1.py           fixed-base G1, joint groups, joint order for state and actions
-  sim/scene.py        tabletop scene: table, blocks, bins, cameras
+  sim/g1.py           fixed-base G1, joint groups and order, grasp site, gravity compensation
+  sim/hand.py         Dex3 claw synergy: one closure value drives seven finger joints
+  sim/ik.py           damped least-squares inverse kinematics
+  sim/scene.py        tabletop scene: table, blocks, bins, cameras, contact settings
   sim/render.py       offscreen camera rendering with explicit quality settings
+  envs/task.py        seeded layouts and instructions
+  envs/outcome.py     outcome labels (success, wrong bin, wrong object, dropped, ...)
+  envs/sort.py        Gymnasium sorting environment: action interface, observations, judging
+  policies/expert.py  scripted expert (privileged state, IK, waits for arrival)
   policies/smolvla.py SmolVLA at a pinned Hub revision with this project's features
   utils/provenance.py git commit, versions and GPU recorded with every result file
-scripts/              entry points (fetch_assets, check_*); logic belongs in src/
+  utils/stats.py      Wilson intervals for success rates
+scripts/              entry points (fetch_assets, check_*, run_expert); logic belongs in src/
 tests/                behavior and interface tests
 docs/                 plan, roadmap, decisions, runbook, reports/, media/
 results/              small committed measurement files with provenance
@@ -34,20 +41,23 @@ third_party/          fetched upstream assets (gitignored)
 outputs/              generated images, videos, logs, datasets, checkpoints (gitignored)
 ```
 
-Planned packages as milestones land: `envs/` (Gymnasium wrapper, resets, success detection),
-`data/` (expert, recording, LeRobot export), `policies/` rollout and adapters,
-`evaluation/` (perturbations, scenario replay, metrics), and `configs/` at the root.
+Planned packages as milestones land: `data/` (recording, LeRobot export), `policies/` rollout
+and adapters, `evaluation/` (perturbations, scenario replay, metrics), and `configs/` at the root.
 
 ## Commands
 
 `make setup`, `make test`, `make lint`, `make format`, `make assets`, `make check-render`,
-`make check-smolvla`. Use `uv run` for everything; never the system Python.
+`make check-smolvla`, `make expert-eval`. Use `uv run` for everything; never the system Python.
+
+Seeds 0-99 were used to develop the scripted expert; evaluate it on seeds from 1000 up.
 
 ## Rules
 
 - **No privileged state in policy inputs.** Object poses from the simulator are for the scripted
   expert and the evaluator only. Policies see camera images, robot joint state and the instruction.
 - **No hidden assistance.** No welded grasps or invisible forces. Report grasping as it is.
+- **Respect the reach map.** IK ignores collisions: the right arm's palm-down workspace without
+  self-collision is a band right of center (D-014). Check new targets against it.
 - **One joint order.** State and action vectors follow `G1Config.active_joints` (arm, then hand).
   Index MuJoCo arrays by joint or actuator name, never by assumed model order: the model orders
   hand joints differently from the actuators.

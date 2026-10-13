@@ -14,26 +14,33 @@ How to set up the project and run each check. Measured numbers live in `results/
 ## Setup
 
 ```bash
-make setup
+uv sync --locked
+uv run pre-commit install
+uv run python scripts/fetch_assets.py
 ```
 
 This installs the locked environment (Python 3.12, MuJoCo, PyTorch + CUDA, LeRobot), the
-pre-commit hooks, and the pinned Unitree G1 model into `third_party/`. For a light environment
-without the ML stack (simulation and tests only), run `uv sync --no-group train` instead.
+pre-commit hooks, and the pinned Unitree G1 model into `third_party/`. With `make` installed,
+`make setup` does the same. For a light environment without the ML stack (simulation and tests
+only), use `uv sync --no-group train`.
 
 ## Everyday commands
 
-| Command | What it does |
-|---|---|
-| `make test` | Run the test suite |
-| `make lint` | Run all pre-commit checks |
-| `make format` | Apply lint fixes and formatting |
-| `make assets` | Re-fetch the pinned robot model |
-| `make check-render` | Measure rendering and physics throughput; images in `outputs/check_render/` |
-| `make check-smolvla` | Measure SmolVLA memory, training-step time and inference latency |
+| Command | `make` shortcut | What it does |
+|---|---|---|
+| `uv run pytest` | `make test` | Run the test suite |
+| `uv run pre-commit run --all-files` | `make lint` | Run all lint, format and file-hygiene checks |
+| `uv run ruff check --fix . && uv run ruff format .` | `make format` | Apply lint fixes and formatting |
+| `uv run python scripts/fetch_assets.py` | `make assets` | Re-fetch the pinned robot model |
+| `uv run python scripts/check_render.py` | `make check-render` | M0: rendering and physics throughput; images in `outputs/check_render/` |
+| `uv run python scripts/check_smolvla.py` | `make check-smolvla` | M0: SmolVLA memory, training-step time and inference latency |
+| `uv run python scripts/run_expert.py --episodes 100 --videos 1` | `make expert-eval` | M1: scripted-expert success rate on held-out seeds; videos in `outputs/m1/` |
 
-Add `--save` to a check script (`uv run python scripts/check_render.py --save`) to write its
-measurements, with provenance, to `results/`.
+Add `--save` to a check or evaluation script to write its measurements, with provenance, to
+`results/`. Run it from a clean commit: results record whether the code was modified.
+
+Seeds 0-99 were used while developing the scripted expert, so its evaluations use seeds from
+1000 up (`--seed-start`, the default).
 
 ## Rendering backends
 
@@ -51,9 +58,11 @@ window instead. Check which renderer is active in the first line of `make check-
 ## Troubleshooting
 
 - **`nvidia-smi: command not found` on WSL2.** It is at `/usr/lib/wsl/lib/nvidia-smi`.
-- **`Menagerie not found` or `expected pinned commit`.** Run `make assets`.
+- **`Menagerie not found` or `expected pinned commit`.** Run `uv run python scripts/fetch_assets.py` (or `make assets`).
 - **Rendering is slow and the renderer is `llvmpipe`.** The D3D12 variables are not set, or the
   process imported mujoco before calling `configure_gl_defaults()`.
 - **`D3D12: Removing Device` under EGL.** Mesa picked the wrong adapter; set
   `MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA`.
 - **`uv sync` removed PyTorch.** It was run with `--no-group train`. Run `uv sync` again.
+- **`make: command not found`.** Install it (`sudo apt install make`) or use the `uv run`
+  commands above; every `make` target is a one-line wrapper around one of them.
