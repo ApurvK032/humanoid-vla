@@ -35,6 +35,8 @@ only), use `uv sync --no-group train`.
 | `uv run python scripts/check_render.py` | `make check-render` | M0: rendering and physics throughput; images in `outputs/check_render/` |
 | `uv run python scripts/check_smolvla.py` | `make check-smolvla` | M0: SmolVLA memory, training-step time and inference latency |
 | `uv run python scripts/run_expert.py --episodes 100 --videos 1` | `make expert-eval` | M1: scripted-expert success rate on held-out seeds; videos in `outputs/m1/` |
+| `uv run python scripts/collect_dataset.py --name NAME --split train --layouts 225` | | M2: record expert demonstrations as a LeRobot dataset in `data/datasets/NAME/train/` |
+| `uv run python scripts/replay_dataset.py --name NAME --split train` | | M2: check a dataset loads, decodes, matches its checksums and replays exactly |
 
 Add `--save` to a check or evaluation script to write its measurements, with provenance, to
 `results/`. Run it from a clean commit: results record whether the code was modified.
@@ -64,5 +66,9 @@ window instead. Check which renderer is active in the first line of `make check-
 - **`D3D12: Removing Device` under EGL.** Mesa picked the wrong adapter; set
   `MESA_D3D12_DEFAULT_ADAPTER_NAME=NVIDIA`.
 - **`uv sync` removed PyTorch.** It was run with `--no-group train`. Run `uv sync` again.
+- **A long warning about `libtorchcodec` and FFmpeg.** torchcodec needs system FFmpeg
+  libraries; LeRobot falls back to PyAV, which works. The project's scripts silence it.
+- **A result or dataset manifest says `"dirty": true`.** Code changed while it ran (or was
+  uncommitted when it started). Commit, then re-run it.
 - **`make: command not found`.** Install it (`sudo apt install make`) or use the `uv run`
   commands above; every `make` target is a one-line wrapper around one of them.

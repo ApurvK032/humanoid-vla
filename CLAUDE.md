@@ -29,7 +29,10 @@ src/humanoid_vla/
   envs/task.py        seeded layouts and instructions
   envs/outcome.py     outcome labels (success, wrong bin, wrong object, dropped, ...)
   envs/sort.py        Gymnasium sorting environment: action interface, observations, judging
-  policies/expert.py  scripted expert (privileged state, IK, waits for arrival)
+  policies/expert.py  scripted expert (privileged state, IK, waits for arrival, randomized())
+  data/scenarios.py   frozen split seed ranges, balanced and paired instructions
+  data/recording.py   LeRobot features (the action contract) and episode recording
+  data/replay.py      replaying recorded actions to verify alignment and semantics
   policies/smolvla.py SmolVLA at a pinned Hub revision with this project's features
   utils/provenance.py git commit, versions and GPU recorded with every result file
   utils/stats.py      Wilson intervals for success rates
@@ -41,8 +44,9 @@ third_party/          fetched upstream assets (gitignored)
 outputs/              generated images, videos, logs, datasets, checkpoints (gitignored)
 ```
 
-Planned packages as milestones land: `data/` (recording, LeRobot export), `policies/` rollout
-and adapters, `evaluation/` (perturbations, scenario replay, metrics), and `configs/` at the root.
+Planned packages as milestones land: `policies/` rollout and adapters, `evaluation/`
+(perturbations, scenario replay, metrics). Datasets live in `data/datasets/` (gitignored), each
+with a `manifest.json`; their meaning is fixed by `docs/ACTION_CONTRACT.md`.
 
 ## Commands
 
@@ -56,6 +60,8 @@ Seeds 0-99 were used to develop the scripted expert; evaluate it on seeds from 1
 - **No privileged state in policy inputs.** Object poses from the simulator are for the scripted
   expert and the evaluator only. Policies see camera images, robot joint state and the instruction.
 - **No hidden assistance.** No welded grasps or invisible forces. Report grasping as it is.
+- **Never record test scenarios.** Splits own seed ranges (`data/scenarios.py`); test layouts
+  are only for final evaluations.
 - **Respect the reach map.** IK ignores collisions: the right arm's palm-down workspace without
   self-collision is a band right of center (D-014). Check new targets against it.
 - **One joint order.** State and action vectors follow `G1Config.active_joints` (arm, then hand).
@@ -87,5 +93,8 @@ Seeds 0-99 were used to develop the scripted expert; evaluate it on seeds from 1
   with VRAM explicitly (`scripts/check_smolvla.py` does).
 - LeRobot loads `smolvla_base` with the VLM and the action expert in bfloat16; the expert's
   trainable weights and AdamW state are bfloat16 too.
+- The environment executes float32 actions so datasets replay bit-for-bit; keep it that way.
+- Editing code while a long run is going marks its result dirty; edit docs only, or re-run.
+- torchcodec cannot load without system FFmpeg; datasets decode with PyAV (`video_backend="pyav"`).
 - `nvidia-smi` is at `/usr/lib/wsl/lib/nvidia-smi`, not on PATH.
 - No sudo on the dev machine: do not depend on apt packages.
