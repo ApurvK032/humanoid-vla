@@ -121,3 +121,37 @@ def test_lerobot_round_trip(recorded, tmp_path: Path) -> None:
     result = replay_episode(env, episode.scenario.seed, episode.scenario.options, actions, states)
     assert result.outcome == Outcome.SUCCESS
     assert result.max_state_error == 0.0
+
+
+def test_lerobot_serves_action_chunks_with_end_padding(recorded, tmp_path: Path) -> None:
+    """SmolVLA trains on 50-action chunks; past an episode's end LeRobot pads and flags them."""
+    lerobot_dataset = pytest.importorskip("lerobot.datasets.lerobot_dataset")
+    env, episode = recorded
+    fps = round(1 / env.control_dt)
+    root = tmp_path / "dataset"
+    dataset = lerobot_dataset.LeRobotDataset.create(
+        repo_id="local/chunks",
+        fps=fps,
+        features=dataset_features(env.config),
+        root=root,
+        use_videos=False,
+    )
+    for frame in episode.frames:
+        dataset.add_frame(dict(frame))
+    dataset.save_episode()
+    dataset.finalize()
+
+    chunk = 50
+    loaded = lerobot_dataset.LeRobotDataset(
+        "local/chunks", root=root, delta_timestamps={ACTION_KEY: [i / fps for i in range(chunk)]}
+    )
+    actions = np.stack([f[ACTION_KEY] for f in episode.frames])
+    first = loaded[0]
+    assert tuple(first[ACTION_KEY].shape) == (chunk, 8)
+    np.testing.assert_array_equal(first[ACTION_KEY].numpy(), actions[:chunk])
+    assert not first["action_is_pad"].any()
+
+    near_end = len(actions) - 10
+    item = loaded[near_end]
+    assert item["action_is_pad"].numpy().tolist() == [False] * 10 + [True] * (chunk - 10)
+    np.testing.assert_array_equal(item[ACTION_KEY].numpy()[:10], actions[near_end:])
