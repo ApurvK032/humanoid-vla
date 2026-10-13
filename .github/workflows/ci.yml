@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Dependencies are synced once below without the multi-GB train group; later `uv run` calls
+  # must not re-sync and pull it in.
+  UV_NO_SYNC: "1"
+  # Headless rendering on the CPU runner through Mesa's llvmpipe.
+  MUJOCO_GL: egl
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          enable-cache: true
+
+      - name: Install OpenGL libraries
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libegl1 libegl-mesa0 libgl1 libgl1-mesa-dri libopengl0
+
+      - name: Install dependencies
+        run: uv sync --locked --no-group train
+
+      - name: Cache pre-commit environments
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Lint and file hygiene
+        run: uv run pre-commit run --all-files --show-diff-on-failure
+
+      - name: Cache robot assets
+        uses: actions/cache@v6
+        with:
+          path: third_party
+          key: assets-${{ hashFiles('src/humanoid_vla/sim/assets.py') }}
+
+      - name: Fetch robot assets
+        run: uv run python scripts/fetch_assets.py
+
+      - name: Test
+        run: uv run pytest

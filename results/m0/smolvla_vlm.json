@@ -1,0 +1,178 @@
+{
+  "provenance": {
+    "started_utc": "2026-10-12T05:16:41+00:00",
+    "git": {
+      "commit": "90a2f2774a481c0e14467a85de9801c071ec70fe",
+      "dirty": false
+    },
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "wsl": true,
+    "packages": {
+      "mujoco": "3.14.0",
+      "numpy": "2.2.6",
+      "torch": "2.11.0",
+      "lerobot": "0.6.1",
+      "transformers": "5.5.4",
+      "peft": "0.21.2"
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4070",
+      "memory_total": "12282 MiB",
+      "driver": "591.86"
+    }
+  },
+  "variant": "vlm",
+  "model": {
+    "repo": "lerobot/smolvla_base",
+    "revision": "5e8d12a6e2975b0e5e5fce7c8caf47c371d257b6"
+  },
+  "shapes": {
+    "cameras": [
+      "head"
+    ],
+    "image_hw": [
+      256,
+      256
+    ],
+    "model_image_hw": [
+      512,
+      512
+    ],
+    "state_dim": 14,
+    "action_dim": 8,
+    "chunk_size": 50
+  },
+  "gpu_memory_gib": {
+    "total": 11.99,
+    "free_at_start": 10.83
+  },
+  "optimizer": {
+    "type": "AdamW",
+    "lr": 0.0001,
+    "grad_clip_norm": 10.0
+  },
+  "gradient_routing": {
+    "connector": {
+      "params": 11796480,
+      "trainable": 11796480,
+      "with_grad": 11796480
+    },
+    "expert": {
+      "params": 98245840,
+      "trainable": 98245840,
+      "with_grad": 98245840
+    },
+    "lm_head": {
+      "params": 47308800,
+      "trainable": 0,
+      "with_grad": 0
+    },
+    "projections": {
+      "params": 1635152,
+      "trainable": 1635152,
+      "with_grad": 1635152
+    },
+    "vision": {
+      "params": 86433024,
+      "trainable": 0,
+      "with_grad": 0
+    },
+    "vlm_text": {
+      "params": 204626880,
+      "trainable": 194793600,
+      "with_grad": 194793600
+    }
+  },
+  "gradient_routing_ok": true,
+  "overfit": {
+    "batch_size": 8,
+    "steps": 200,
+    "mean_loss_first": 2.0324,
+    "mean_loss_last": 0.4869,
+    "loss_every_10_steps": [
+      4.0191,
+      1.9116,
+      1.9864,
+      1.6551,
+      1.8006,
+      1.4938,
+      1.3553,
+      1.5535,
+      1.4879,
+      1.7266,
+      1.4198,
+      1.0169,
+      1.4494,
+      1.1263,
+      1.065,
+      1.0269,
+      0.7964,
+      0.6474,
+      0.5935,
+      0.3527
+    ],
+    "ok": true
+  },
+  "training_sweep": [
+    {
+      "batch_size": 1,
+      "peak_allocated_gib": 3.23,
+      "peak_reserved_gib": 3.35,
+      "step_s": 0.1062,
+      "samples_per_s": 9.4
+    },
+    {
+      "batch_size": 2,
+      "peak_allocated_gib": 3.24,
+      "peak_reserved_gib": 3.4,
+      "step_s": 0.1139,
+      "samples_per_s": 17.6
+    },
+    {
+      "batch_size": 4,
+      "peak_allocated_gib": 3.24,
+      "peak_reserved_gib": 3.43,
+      "step_s": 0.1241,
+      "samples_per_s": 32.2
+    },
+    {
+      "batch_size": 8,
+      "peak_allocated_gib": 3.32,
+      "peak_reserved_gib": 3.53,
+      "step_s": 0.1475,
+      "samples_per_s": 54.2
+    },
+    {
+      "batch_size": 16,
+      "peak_allocated_gib": 4.56,
+      "peak_reserved_gib": 4.86,
+      "step_s": 0.2235,
+      "samples_per_s": 71.6
+    },
+    {
+      "batch_size": 32,
+      "peak_allocated_gib": 7.0,
+      "peak_reserved_gib": 7.22,
+      "step_s": 0.4072,
+      "samples_per_s": 78.6
+    },
+    {
+      "batch_size": 64,
+      "exceeds_vram": true,
+      "peak_allocated_gib": 11.87,
+      "peak_reserved_gib": 12.3
+    }
+  ],
+  "inference": {
+    "chunk_shape": [
+      1,
+      50,
+      8
+    ],
+    "flow_steps": 10,
+    "latency_ms_median": 178.2,
+    "latency_ms_max": 179.9,
+    "peak_allocated_gib": 0.9
+  }
+}
