@@ -20,19 +20,17 @@ configure_gl_defaults()
 
 import imageio.v2 as imageio
 import numpy as np
-from PIL import Image
 
 from humanoid_vla.envs.outcome import Outcome
 from humanoid_vla.envs.sort import SortEnv, SortEnvConfig
 from humanoid_vla.paths import OUTPUTS_DIR, REPO_ROOT, RESULTS_DIR
 from humanoid_vla.policies.expert import ScriptedExpert
 from humanoid_vla.sim.render import CameraRenderer
+from humanoid_vla.utils.media import write_gif
 from humanoid_vla.utils.provenance import provenance, write_result
 from humanoid_vla.utils.stats import wilson_interval
 
 VIDEO_HW = (480, 640)  # scene camera; the head camera is rendered square at the same height
-GIF_WIDTH = 480
-GIF_EVERY = 2  # keep every second control step: 12.5 fps
 
 
 def run_episode(
@@ -93,24 +91,6 @@ def summarize(episodes: list[dict], wall_s: float) -> dict:
         "episodes_with_ik_failures": sum(e["ik_failures"] > 0 for e in episodes),
         "wall_time_s": round(wall_s, 1),
     }
-
-
-def write_gif(frames: list[np.ndarray], path: Path) -> None:
-    height = round(frames[0].shape[0] * GIF_WIDTH / frames[0].shape[1])
-    images = [
-        Image.fromarray(f).resize((GIF_WIDTH, height), Image.Resampling.LANCZOS)
-        for f in frames[::GIF_EVERY]
-    ]
-    # One palette for all frames, built from frames across the episode so every block color
-    # keeps its hue.
-    samples = images[:: max(1, len(images) // 8)]
-    montage = Image.new("RGB", (images[0].width, images[0].height * len(samples)))
-    for k, sample in enumerate(samples):
-        montage.paste(sample, (0, k * images[0].height))
-    palette = montage.quantize(colors=192, method=Image.Quantize.MEDIANCUT)
-    images = [im.quantize(palette=palette, dither=Image.Dither.NONE) for im in images]
-    frame_ms = 40 * GIF_EVERY
-    images[0].save(path, save_all=True, append_images=images[1:], duration=frame_ms, loop=0)
 
 
 def main() -> int:

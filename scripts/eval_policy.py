@@ -4,7 +4,7 @@ Runs the policy on scenarios from a split (development by default; test layouts 
 final evaluations), and reports the success rate with a 95% Wilson interval, how often the
 policy lifted the instructed block first, and, on layouts used with two different instructions,
 whether its behavior changed with the instruction. Videos (scene, head and wrist cameras side by
-side) go to outputs/m3/.
+side) go to outputs/m3/; ``--gif`` also writes the first one as a small GIF.
 
     uv run python scripts/eval_policy.py \\
         --checkpoint outputs/train/RUN/checkpoints/020000/pretrained_model \\
@@ -39,10 +39,12 @@ from humanoid_vla.evaluation.rollout import run_rollout
 from humanoid_vla.paths import OUTPUTS_DIR, REPO_ROOT, RESULTS_DIR
 from humanoid_vla.policies.runner import PolicyRunner
 from humanoid_vla.sim.render import CameraRenderer
+from humanoid_vla.utils.media import write_gif
 from humanoid_vla.utils.provenance import provenance, write_result
 from humanoid_vla.utils.stats import wilson_interval
 
 VIDEO_HEIGHT = 360
+GIF_WIDTH = 720
 
 
 def summarize(rows: list[dict]) -> dict:
@@ -88,6 +90,7 @@ def main() -> int:
     parser.add_argument("--first-layout", type=int, default=0)
     parser.add_argument("--n-action-steps", type=int, default=10)
     parser.add_argument("--videos", type=int, default=0, help="record the first N episodes")
+    parser.add_argument("--gif", type=Path, help="also write the first video as a small GIF")
     parser.add_argument("--name", help="results name (default: run and step)")
     parser.add_argument("--save", action="store_true", help="write results/m3/eval_<name>.json")
     args = parser.parse_args()
@@ -130,6 +133,9 @@ def main() -> int:
             path = video_dir / f"{run_dir.name}_{step}_{scenario.scenario_id}.mp4"
             imageio.mimwrite(path, frames, fps=round(1 / env.control_dt), macro_block_size=16)
             print(f"  video: {path}")
+            if args.gif is not None and k == 0:
+                write_gif(frames, args.gif, width=GIF_WIDTH)
+                print(f"  gif: {args.gif} ({args.gif.stat().st_size / 1e3:.0f} kB)")
         rows.append(result.as_dict())
         print(
             f"[{k + 1}/{len(scenarios)}] {scenario.scenario_id}: {result.outcome} "
