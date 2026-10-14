@@ -104,6 +104,8 @@ Seeds 0-99 were used to develop the scripted expert; evaluate it on seeds from 1
   features rather than replacing them; select cameras with `train_smolvla.py --cameras`.
 - Policy inference measured while a training run shares the GPU is about 3x slower; take timings
   on an idle GPU.
+- Renders of the same state can differ by one intensity level in a few pixels, so closed-loop
+  evaluations are not bit-for-bit repeatable even with seeded policy noise; compare success rates.
 - The environment executes float32 actions so datasets replay bit-for-bit; keep it that way.
 - Editing code while a long run is going marks its result dirty; edit docs only, or re-run.
 - torchcodec cannot load without system FFmpeg; datasets decode with PyAV (`video_backend="pyav"`).

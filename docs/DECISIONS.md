@@ -196,8 +196,12 @@ the parsed loss history next to its checkpoints.
 Policies are judged by running them in the environment on layouts they were not trained on:
 development layouts while developing, test layouts only for final numbers. SmolVLA samples each
 action chunk from noise, so two unseeded evaluations of the pilot policy on the same 17 episodes
-gave 1 and 2 successes; each episode now seeds the noise from its scenario, which makes an
-evaluation repeatable and gives every compared checkpoint the same noise. Reported: success with
+gave 1 and 2 successes; each episode now seeds the noise from its scenario, so every compared
+checkpoint gets the same noise. Evaluations still do not repeat exactly: renders of the same state
+differ by one intensity level in a few head-camera pixels (the GPU renderer under WSL2), and
+closed-loop rollouts amplify that. Re-evaluating the 5,000-step checkpoint changed the outcome of
+22 of 30 episodes (4 and then 7 successes), so checkpoints are compared by success rates and
+their intervals, not episode by episode. Reported: success with
 a 95% Wilson interval, which block was lifted first (instruction following, separately from
 manipulation), behavior on layouts evaluated with both instructions, and inference time. The
 policy predicts 50 actions, executes the first N and then observes again; cameras render only on
