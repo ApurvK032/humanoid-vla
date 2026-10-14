@@ -5,10 +5,11 @@ Wraps `lerobot-train` so every run can be traced and repeated:
 - the base model is downloaded at the pinned Hub revision and passed as a local path, so the
   config, weights and processors all come from that revision;
 - the policy takes its input and output features from the dataset (head and wrist cameras, the
-  14-dim state, the 8-dim action) instead of the base model's SO-100 layout;
+  14-dim state, the 8-dim action) instead of the base model's SO-100 layout; ``--cameras`` gives
+  it only some of the cameras;
 - the dataset is identified by the SHA-256 of its manifest;
-- ``--float32-expert`` keeps the action expert's weights in float32 instead of LeRobot's bfloat16,
-  through ``humanoid_vla.policies.lerobot_train``;
+- ``--float32-expert`` keeps the action expert's weights in float32 instead of LeRobot's bfloat16;
+  this and ``--cameras`` run lerobot-train through ``humanoid_vla.policies.lerobot_train``;
 - provenance is captured when the run starts, the full log is kept, and a run manifest with the
   exact command and the parsed training log is written next to the checkpoints.
 
@@ -71,6 +72,7 @@ def main() -> int:
     parser.add_argument(
         "--float32-expert", action="store_true", help="train the action expert in float32"
     )
+    parser.add_argument("--cameras", help="comma-separated dataset cameras (default: all)")
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--save", action="store_true", help="write results/m3/train_<run>.json")
     parser.add_argument("extra", nargs="*", help="further lerobot-train arguments, after --")
@@ -80,6 +82,16 @@ def main() -> int:
     dataset_root = DATA_ROOT / args.dataset / args.split
     manifest_path = dataset_root / "manifest.json"
     manifest = json.loads(manifest_path.read_text())
+    info = json.loads((dataset_root / "meta" / "info.json").read_text())
+    dataset_cameras = [
+        key.removeprefix("observation.images.")
+        for key in info["features"]
+        if key.startswith("observation.images.")
+    ]
+    cameras = args.cameras.split(",") if args.cameras else dataset_cameras
+    if unknown := sorted(set(cameras) - set(dataset_cameras)):
+        print(f"error: the dataset has no camera {unknown}", file=sys.stderr)
+        return 1
     output_dir = OUTPUTS_DIR / "train" / args.run
     if output_dir.exists():
         if not args.overwrite:
@@ -91,9 +103,12 @@ def main() -> int:
     base_dir = snapshot_download(SMOLVLA_REPO, revision=SMOLVLA_REVISION)
     vlm_name = "HuggingFaceTB/SmolVLM2-500M-Video-Instruct"
     vlm_revision = HfApi().model_info(vlm_name).sha
-    launcher = ["lerobot-train"]
+    options = [f"--cameras={','.join(cameras)}"] if args.cameras else []
     if args.float32_expert:
-        launcher = ["python", "-m", "humanoid_vla.policies.lerobot_train", "--float32-expert"]
+        options.insert(0, "--float32-expert")
+    launcher = ["lerobot-train"]
+    if options:
+        launcher = ["python", "-m", "humanoid_vla.policies.lerobot_train", *options]
     command = [
         *launcher,
         f"--policy.path={base_dir}",
@@ -163,6 +178,7 @@ def main() -> int:
             "seed": args.seed,
             "fine_tuning": "LeRobot default for SmolVLA: VLM frozen, action expert trained",
             "action_expert_weights": "float32" if args.float32_expert else "bfloat16",
+            "cameras": [cam for cam in dataset_cameras if cam in cameras],
         },
         "history": history,
     }
