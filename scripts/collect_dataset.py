@@ -6,6 +6,8 @@ parameters and checksum, the configs, the code's provenance, and a hash of every
 
     uv run python scripts/collect_dataset.py --name g1_sort_pilot --split train --layouts 40
 
+``--paired-fraction`` sets the share of layouts recorded with a second instruction (D-022).
+
 The dataset lands in data/datasets/<name>/<split>/ (gitignored); see docs/ACTION_CONTRACT.md.
 """
 
@@ -120,6 +122,12 @@ def main() -> int:
     parser.add_argument("--split", choices=sorted(SPLIT_START), default="train")
     parser.add_argument("--layouts", type=int, required=True, help="number of layouts to use")
     parser.add_argument("--first-layout", type=int, default=0)
+    parser.add_argument(
+        "--paired-fraction",
+        type=float,
+        default=1 / 3,
+        help="share of layouts also recorded with a second instruction",
+    )
     parser.add_argument("--cameras", nargs="+", default=["head", "wrist"])
     parser.add_argument("--image-size", type=int, default=256)
     parser.add_argument("--workers", type=int, default=4, help="parallel rendering processes")
@@ -149,7 +157,7 @@ def main() -> int:
     )
     rejected_dir = root / "rejected"
 
-    scenarios = make_scenarios(args.split, args.layouts, args.first_layout)
+    scenarios = make_scenarios(args.split, args.layouts, args.first_layout, args.paired_fraction)
     episodes, rejected = [], []
     start = time.perf_counter()
     for k, record in enumerate(recorded_in_order(scenarios, env_config, args.workers)):
@@ -199,6 +207,7 @@ def main() -> int:
             "repo_id": dataset.repo_id,
             "fps": dataset.fps,
             "layouts": [args.first_layout, args.first_layout + args.layouts],
+            "paired_fraction": args.paired_fraction,
             "episodes": len(episodes),
             "frames": sum(e["frames"] for e in episodes),
             "rejected": len(rejected),
