@@ -1,0 +1,1296 @@
+{
+  "provenance": {
+    "started_utc": "2026-10-14T19:43:51+00:00",
+    "git": {
+      "commit": "3de8fe0fa7094ede88894c8b7d0561c9263b2616",
+      "dirty": false
+    },
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "wsl": true,
+    "packages": {
+      "mujoco": "3.14.0",
+      "numpy": "2.2.6",
+      "torch": "2.11.0",
+      "lerobot": "0.6.1",
+      "transformers": "5.5.4",
+      "peft": "0.21.2"
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4070",
+      "memory_total": "12282 MiB",
+      "driver": "591.86"
+    }
+  },
+  "checkpoint": {
+    "run": "smolvla_v2_vlm",
+    "step": "005000",
+    "trained_at_commit": "4ae7d7df8fe21c7c5cec23af0e3d727f26fcb4b3",
+    "dataset": "g1_sort_v2",
+    "dataset_manifest_sha256": "15f36ad86d860accc0e5fdb0ccd7a9a2a7ce3f095d4ee520d348cd87112a2e9b",
+    "action_expert_weights": "bfloat16"
+  },
+  "evaluation": {
+    "split": "dev",
+    "layouts": [
+      0,
+      50
+    ],
+    "n_action_steps": 10,
+    "cameras": [
+      "head",
+      "wrist"
+    ],
+    "noise_seed": "per scenario, from Scenario.rng()"
+  },
+  "summary": {
+    "episodes": 70,
+    "successes": 6,
+    "success_rate": 0.0857,
+    "success_rate_wilson95": [
+      0.0399,
+      0.1747
+    ],
+    "outcomes": {
+      "wrong_object": 37,
+      "timeout": 26,
+      "dropped": 1,
+      "success": 6
+    },
+    "picked_instructed_block_first": 0.1857,
+    "lifted_nothing": 15,
+    "by_instruction": {
+      "blue->left": {
+        "successes": 2,
+        "episodes": 16
+      },
+      "blue->right": {
+        "successes": 0,
+        "episodes": 9
+      },
+      "green->left": {
+        "successes": 1,
+        "episodes": 9
+      },
+      "green->right": {
+        "successes": 0,
+        "episodes": 13
+      },
+      "red->left": {
+        "successes": 2,
+        "episodes": 12
+      },
+      "red->right": {
+        "successes": 1,
+        "episodes": 11
+      }
+    },
+    "paired_layouts": {
+      "pairs": 20,
+      "both_succeeded": 0,
+      "different_blocks": {
+        "pairs": 17,
+        "both_picked_instructed_block": 0
+      },
+      "same_block_different_bins": {
+        "pairs": 3,
+        "both_in_instructed_bin": 0
+      }
+    },
+    "mean_inference_ms": 178.1,
+    "mean_episode_s": 16.58,
+    "wall_time_s": 759.7
+  },
+  "episodes": [
+    {
+      "scenario_id": "dev-200000-blue-left",
+      "seed": 200000,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 24.8,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 62,
+      "inference_ms": 186.6
+    },
+    {
+      "scenario_id": "dev-200001-green-right",
+      "seed": 200001,
+      "target": "green",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 178.7
+    },
+    {
+      "scenario_id": "dev-200001-blue-left",
+      "seed": 200001,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 7.36,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 19,
+      "inference_ms": 179.8
+    },
+    {
+      "scenario_id": "dev-200002-red-left",
+      "seed": 200002,
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 178.6
+    },
+    {
+      "scenario_id": "dev-200002-red-right",
+      "seed": 200002,
+      "target": "red",
+      "destination": "right",
+      "outcome": "dropped",
+      "duration_s": 3.56,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 9,
+      "inference_ms": 179.2
+    },
+    {
+      "scenario_id": "dev-200003-red-right",
+      "seed": 200003,
+      "target": "red",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "red",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 179.7
+    },
+    {
+      "scenario_id": "dev-200003-blue-left",
+      "seed": 200003,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 9.76,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "left",
+        "blue": null
+      },
+      "chunks": 25,
+      "inference_ms": 178.5
+    },
+    {
+      "scenario_id": "dev-200004-blue-right",
+      "seed": 200004,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 179.3
+    },
+    {
+      "scenario_id": "dev-200004-red-left",
+      "seed": 200004,
+      "target": "red",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 17.16,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "left",
+        "blue": null
+      },
+      "chunks": 43,
+      "inference_ms": 178.9
+    },
+    {
+      "scenario_id": "dev-200005-green-left",
+      "seed": 200005,
+      "target": "green",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 15.32,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 39,
+      "inference_ms": 178.6
+    },
+    {
+      "scenario_id": "dev-200005-blue-left",
+      "seed": 200005,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 15.76,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 40,
+      "inference_ms": 178.6
+    },
+    {
+      "scenario_id": "dev-200006-green-right",
+      "seed": 200006,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 5.56,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "right"
+      },
+      "chunks": 14,
+      "inference_ms": 180.1
+    },
+    {
+      "scenario_id": "dev-200006-red-left",
+      "seed": 200006,
+      "target": "red",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 5.92,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "left"
+      },
+      "chunks": 15,
+      "inference_ms": 176.4
+    },
+    {
+      "scenario_id": "dev-200007-blue-right",
+      "seed": 200007,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 179.0
+    },
+    {
+      "scenario_id": "dev-200007-green-left",
+      "seed": 200007,
+      "target": "green",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 178.4
+    },
+    {
+      "scenario_id": "dev-200008-red-right",
+      "seed": 200008,
+      "target": "red",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 7.84,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "right",
+        "blue": null
+      },
+      "chunks": 20,
+      "inference_ms": 179.0
+    },
+    {
+      "scenario_id": "dev-200008-red-left",
+      "seed": 200008,
+      "target": "red",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 6.08,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "left",
+        "blue": null
+      },
+      "chunks": 16,
+      "inference_ms": 177.4
+    },
+    {
+      "scenario_id": "dev-200009-red-left",
+      "seed": 200009,
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 178.2
+    },
+    {
+      "scenario_id": "dev-200010-blue-left",
+      "seed": 200010,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 178.2
+    },
+    {
+      "scenario_id": "dev-200011-green-left",
+      "seed": 200011,
+      "target": "green",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 6.76,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 17,
+      "inference_ms": 179.2
+    },
+    {
+      "scenario_id": "dev-200011-blue-left",
+      "seed": 200011,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "blue",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "left"
+      },
+      "chunks": 63,
+      "inference_ms": 178.3
+    },
+    {
+      "scenario_id": "dev-200012-red-right",
+      "seed": 200012,
+      "target": "red",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 22.44,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "right"
+      },
+      "chunks": 57,
+      "inference_ms": 178.6
+    },
+    {
+      "scenario_id": "dev-200013-red-left",
+      "seed": 200013,
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "left",
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.5
+    },
+    {
+      "scenario_id": "dev-200014-blue-right",
+      "seed": 200014,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 5.44,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "right",
+        "blue": null
+      },
+      "chunks": 14,
+      "inference_ms": 178.9
+    },
+    {
+      "scenario_id": "dev-200015-green-left",
+      "seed": 200015,
+      "target": "green",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "green",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": "left",
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 178.2
+    },
+    {
+      "scenario_id": "dev-200016-green-right",
+      "seed": 200016,
+      "target": "green",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.2
+    },
+    {
+      "scenario_id": "dev-200017-blue-left",
+      "seed": 200017,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 6.32,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "left",
+        "blue": null
+      },
+      "chunks": 16,
+      "inference_ms": 178.6
+    },
+    {
+      "scenario_id": "dev-200018-green-right",
+      "seed": 200018,
+      "target": "green",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.4
+    },
+    {
+      "scenario_id": "dev-200019-blue-left",
+      "seed": 200019,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 6.28,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 16,
+      "inference_ms": 178.5
+    },
+    {
+      "scenario_id": "dev-200019-green-right",
+      "seed": 200019,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 15.76,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "right",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 40,
+      "inference_ms": 177.4
+    },
+    {
+      "scenario_id": "dev-200020-green-left",
+      "seed": 200020,
+      "target": "green",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "green",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.8
+    },
+    {
+      "scenario_id": "dev-200021-blue-right",
+      "seed": 200021,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 5.52,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "right",
+        "blue": null
+      },
+      "chunks": 14,
+      "inference_ms": 177.1
+    },
+    {
+      "scenario_id": "dev-200022-red-left",
+      "seed": 200022,
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.7
+    },
+    {
+      "scenario_id": "dev-200022-green-right",
+      "seed": 200022,
+      "target": "green",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.9
+    },
+    {
+      "scenario_id": "dev-200023-red-right",
+      "seed": 200023,
+      "target": "red",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 14.92,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "right"
+      },
+      "chunks": 38,
+      "inference_ms": 178.4
+    },
+    {
+      "scenario_id": "dev-200024-green-left",
+      "seed": 200024,
+      "target": "green",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.9
+    },
+    {
+      "scenario_id": "dev-200025-green-right",
+      "seed": 200025,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 16.28,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "right",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 41,
+      "inference_ms": 178.0
+    },
+    {
+      "scenario_id": "dev-200026-red-right",
+      "seed": 200026,
+      "target": "red",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 5.84,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "right"
+      },
+      "chunks": 15,
+      "inference_ms": 177.4
+    },
+    {
+      "scenario_id": "dev-200026-blue-left",
+      "seed": 200026,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "duration_s": 16.84,
+      "first_lifted": "blue",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "left"
+      },
+      "chunks": 43,
+      "inference_ms": 177.6
+    },
+    {
+      "scenario_id": "dev-200027-blue-left",
+      "seed": 200027,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.4
+    },
+    {
+      "scenario_id": "dev-200027-red-left",
+      "seed": 200027,
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 178.0
+    },
+    {
+      "scenario_id": "dev-200028-red-left",
+      "seed": 200028,
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 176.7
+    },
+    {
+      "scenario_id": "dev-200029-blue-right",
+      "seed": 200029,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 178.2
+    },
+    {
+      "scenario_id": "dev-200030-red-left",
+      "seed": 200030,
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "duration_s": 15.56,
+      "first_lifted": "red",
+      "picked_target": true,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 39,
+      "inference_ms": 177.0
+    },
+    {
+      "scenario_id": "dev-200031-green-left",
+      "seed": 200031,
+      "target": "green",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 6.8,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 17,
+      "inference_ms": 176.1
+    },
+    {
+      "scenario_id": "dev-200031-blue-right",
+      "seed": 200031,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 20.2,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "right",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 51,
+      "inference_ms": 178.5
+    },
+    {
+      "scenario_id": "dev-200032-green-right",
+      "seed": 200032,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 11.64,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "right",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 30,
+      "inference_ms": 177.3
+    },
+    {
+      "scenario_id": "dev-200032-blue-left",
+      "seed": 200032,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 17.96,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 45,
+      "inference_ms": 177.4
+    },
+    {
+      "scenario_id": "dev-200033-blue-left",
+      "seed": 200033,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "duration_s": 7.76,
+      "first_lifted": "blue",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "left"
+      },
+      "chunks": 20,
+      "inference_ms": 177.2
+    },
+    {
+      "scenario_id": "dev-200034-blue-right",
+      "seed": 200034,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 14.88,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "right",
+        "blue": null
+      },
+      "chunks": 38,
+      "inference_ms": 177.3
+    },
+    {
+      "scenario_id": "dev-200035-red-right",
+      "seed": 200035,
+      "target": "red",
+      "destination": "right",
+      "outcome": "success",
+      "duration_s": 16.8,
+      "first_lifted": "red",
+      "picked_target": true,
+      "final_bins": {
+        "red": "right",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 42,
+      "inference_ms": 177.3
+    },
+    {
+      "scenario_id": "dev-200035-green-right",
+      "seed": 200035,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 5.44,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "right"
+      },
+      "chunks": 14,
+      "inference_ms": 176.3
+    },
+    {
+      "scenario_id": "dev-200036-green-right",
+      "seed": 200036,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 5.8,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "right"
+      },
+      "chunks": 15,
+      "inference_ms": 178.8
+    },
+    {
+      "scenario_id": "dev-200037-blue-left",
+      "seed": 200037,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "blue",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.2
+    },
+    {
+      "scenario_id": "dev-200038-green-left",
+      "seed": 200038,
+      "target": "green",
+      "destination": "left",
+      "outcome": "success",
+      "duration_s": 7.6,
+      "first_lifted": "green",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": "left",
+        "blue": null
+      },
+      "chunks": 19,
+      "inference_ms": 179.6
+    },
+    {
+      "scenario_id": "dev-200039-red-right",
+      "seed": 200039,
+      "target": "red",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 6.68,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "right"
+      },
+      "chunks": 17,
+      "inference_ms": 176.7
+    },
+    {
+      "scenario_id": "dev-200039-green-right",
+      "seed": 200039,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 8.44,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "right"
+      },
+      "chunks": 22,
+      "inference_ms": 179.0
+    },
+    {
+      "scenario_id": "dev-200040-red-left",
+      "seed": 200040,
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "duration_s": 18.88,
+      "first_lifted": "red",
+      "picked_target": true,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 48,
+      "inference_ms": 177.2
+    },
+    {
+      "scenario_id": "dev-200041-blue-right",
+      "seed": 200041,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.3
+    },
+    {
+      "scenario_id": "dev-200041-red-right",
+      "seed": 200041,
+      "target": "red",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 13.96,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "right",
+        "blue": null
+      },
+      "chunks": 35,
+      "inference_ms": 177.9
+    },
+    {
+      "scenario_id": "dev-200042-red-left",
+      "seed": 200042,
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 178.4
+    },
+    {
+      "scenario_id": "dev-200043-blue-right",
+      "seed": 200043,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "blue",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.5
+    },
+    {
+      "scenario_id": "dev-200043-blue-left",
+      "seed": 200043,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 16.92,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 43,
+      "inference_ms": 178.2
+    },
+    {
+      "scenario_id": "dev-200044-red-right",
+      "seed": 200044,
+      "target": "red",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 5.72,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "right",
+        "blue": null
+      },
+      "chunks": 15,
+      "inference_ms": 177.8
+    },
+    {
+      "scenario_id": "dev-200045-green-right",
+      "seed": 200045,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 13.24,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "right",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 34,
+      "inference_ms": 177.5
+    },
+    {
+      "scenario_id": "dev-200046-blue-left",
+      "seed": 200046,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 12.24,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 31,
+      "inference_ms": 177.4
+    },
+    {
+      "scenario_id": "dev-200047-green-left",
+      "seed": 200047,
+      "target": "green",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 6.2,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 16,
+      "inference_ms": 177.3
+    },
+    {
+      "scenario_id": "dev-200048-green-right",
+      "seed": 200048,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 20.8,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "right",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 52,
+      "inference_ms": 177.2
+    },
+    {
+      "scenario_id": "dev-200049-red-right",
+      "seed": 200049,
+      "target": "red",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "red",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 177.5
+    },
+    {
+      "scenario_id": "dev-200049-blue-left",
+      "seed": 200049,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 15.24,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 39,
+      "inference_ms": 177.1
+    }
+  ]
+}
