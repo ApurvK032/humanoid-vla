@@ -8,6 +8,8 @@ Wraps `lerobot-train` so every run can be traced and repeated:
   14-dim state, the 8-dim action) instead of the base model's SO-100 layout; ``--cameras`` gives
   it only some of the cameras;
 - the dataset is identified by the SHA-256 of its manifest;
+- ``--train-vlm`` also trains the VLM's text layers (LeRobot's default trains only the action
+  expert and projections; the vision encoder stays frozen either way);
 - ``--float32-expert`` keeps the action expert's weights in float32 instead of LeRobot's bfloat16;
   this and ``--cameras`` run lerobot-train through ``humanoid_vla.policies.lerobot_train``;
 - provenance is captured when the run starts, the full log is kept, and a run manifest with the
@@ -73,6 +75,7 @@ def main() -> int:
         "--float32-expert", action="store_true", help="train the action expert in float32"
     )
     parser.add_argument("--cameras", help="comma-separated dataset cameras (default: all)")
+    parser.add_argument("--train-vlm", action="store_true", help="also train the VLM's text layers")
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--save", action="store_true", help="write results/m3/train_<run>.json")
     parser.add_argument("extra", nargs="*", help="further lerobot-train arguments, after --")
@@ -116,6 +119,7 @@ def main() -> int:
         "--policy.output_features=null",
         "--policy.push_to_hub=false",
         "--policy.device=cuda",
+        f"--policy.train_expert_only={str(not args.train_vlm).lower()}",
         f"--dataset.repo_id={manifest['dataset']['repo_id']}",
         f"--dataset.root={dataset_root}",
         "--dataset.video_backend=pyav",
@@ -176,7 +180,11 @@ def main() -> int:
             "save_freq": args.save_freq,
             "num_workers": args.num_workers,
             "seed": args.seed,
-            "fine_tuning": "LeRobot default for SmolVLA: VLM frozen, action expert trained",
+            "fine_tuning": (
+                "VLM text layers and action expert trained, vision encoder frozen"
+                if args.train_vlm
+                else "LeRobot default for SmolVLA: VLM frozen, action expert trained"
+            ),
             "action_expert_weights": "float32" if args.float32_expert else "bfloat16",
             "cameras": [cam for cam in dataset_cameras if cam in cameras],
         },
