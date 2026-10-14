@@ -7,6 +7,8 @@ Wraps `lerobot-train` so every run can be traced and repeated:
 - the policy takes its input and output features from the dataset (head and wrist cameras, the
   14-dim state, the 8-dim action) instead of the base model's SO-100 layout;
 - the dataset is identified by the SHA-256 of its manifest;
+- ``--float32-expert`` keeps the action expert's weights in float32 instead of LeRobot's bfloat16,
+  through ``humanoid_vla.policies.lerobot_train``;
 - provenance is captured when the run starts, the full log is kept, and a run manifest with the
   exact command and the parsed training log is written next to the checkpoints.
 
@@ -66,6 +68,9 @@ def main() -> int:
     parser.add_argument("--log-freq", type=int, default=100)
     parser.add_argument("--num-workers", type=int, default=4)
     parser.add_argument("--seed", type=int, default=1000)
+    parser.add_argument(
+        "--float32-expert", action="store_true", help="train the action expert in float32"
+    )
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--save", action="store_true", help="write results/m3/train_<run>.json")
     parser.add_argument("extra", nargs="*", help="further lerobot-train arguments, after --")
@@ -86,8 +91,11 @@ def main() -> int:
     base_dir = snapshot_download(SMOLVLA_REPO, revision=SMOLVLA_REVISION)
     vlm_name = "HuggingFaceTB/SmolVLM2-500M-Video-Instruct"
     vlm_revision = HfApi().model_info(vlm_name).sha
+    launcher = ["lerobot-train"]
+    if args.float32_expert:
+        launcher = ["python", "-m", "humanoid_vla.policies.lerobot_train", "--float32-expert"]
     command = [
-        "lerobot-train",
+        *launcher,
         f"--policy.path={base_dir}",
         "--policy.input_features=null",
         "--policy.output_features=null",
@@ -154,6 +162,7 @@ def main() -> int:
             "num_workers": args.num_workers,
             "seed": args.seed,
             "fine_tuning": "LeRobot default for SmolVLA: VLM frozen, action expert trained",
+            "action_expert_weights": "float32" if args.float32_expert else "bfloat16",
         },
         "history": history,
     }

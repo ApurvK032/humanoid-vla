@@ -159,6 +159,7 @@ def main() -> int:
                 "trained_at_commit": run.get("provenance", {}).get("git", {}).get("commit"),
                 "dataset": run.get("dataset", {}).get("name"),
                 "dataset_manifest_sha256": run.get("dataset", {}).get("manifest_sha256"),
+                "action_expert_weights": "float32" if runner.float32_expert else "bfloat16",
             },
             "evaluation": {
                 "split": args.split,

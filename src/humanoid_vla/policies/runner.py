@@ -5,9 +5,11 @@ during training (CHW float images in [0, 1], float32 state, the instruction as t
 the checkpoint's own pre- and post-processors (tokenizing, normalization, unnormalization), and
 returns one action per control step. The policy predicts a chunk of actions and executes
 ``n_action_steps`` of them before it needs a new observation; ``needs_observation`` tells the
-caller when, so cameras only have to render on those steps.
+caller when, so cameras only have to render on those steps. A checkpoint trained with a float32
+action expert is built with one, so it runs as it was trained.
 """
 
+import contextlib
 from pathlib import Path
 from typing import Any
 
@@ -19,6 +21,7 @@ from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
 from lerobot.utils.constants import OBS_STATE
 
 from humanoid_vla.data.recording import image_key
+from humanoid_vla.policies.smolvla import float32_action_expert, stored_expert_dtype
 
 
 class PolicyRunner:
@@ -32,7 +35,9 @@ class PolicyRunner:
                 raise ValueError(f"n_action_steps must be in [1, {config.chunk_size}]")
             config.n_action_steps = n_action_steps
         self.config = config
-        self.policy = SmolVLAPolicy.from_pretrained(checkpoint, config=config)
+        self.float32_expert = stored_expert_dtype(checkpoint) == "F32"
+        with float32_action_expert() if self.float32_expert else contextlib.nullcontext():
+            self.policy = SmolVLAPolicy.from_pretrained(checkpoint, config=config)
         self.policy.eval()
         self.preprocess, self.postprocess = make_pre_post_processors(
             config,
