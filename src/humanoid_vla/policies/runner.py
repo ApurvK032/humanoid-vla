@@ -1,0 +1,79 @@
+"""Closed-loop execution of a fine-tuned SmolVLA checkpoint.
+
+The runner converts environment observations into the batch format LeRobot's dataset produced
+during training (CHW float images in [0, 1], float32 state, the instruction as the task), runs
+the checkpoint's own pre- and post-processors (tokenizing, normalization, unnormalization), and
+returns one action per control step. The policy predicts a chunk of actions and executes
+``n_action_steps`` of them before it needs a new observation; ``needs_observation`` tells the
+caller when, so cameras only have to render on those steps.
+"""
+
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+import torch
+from lerobot.configs import PreTrainedConfig
+from lerobot.policies import make_pre_post_processors
+from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
+from lerobot.utils.constants import OBS_STATE
+
+from humanoid_vla.data.recording import image_key
+
+
+class PolicyRunner:
+    def __init__(
+        self, checkpoint: Path, n_action_steps: int | None = None, device: str = "cuda"
+    ) -> None:
+        config = PreTrainedConfig.from_pretrained(checkpoint)
+        config.device = device
+        if n_action_steps is not None:
+            if not 1 <= n_action_steps <= config.chunk_size:
+                raise ValueError(f"n_action_steps must be in [1, {config.chunk_size}]")
+            config.n_action_steps = n_action_steps
+        self.config = config
+        self.policy = SmolVLAPolicy.from_pretrained(checkpoint, config=config)
+        self.policy.eval()
+        self.preprocess, self.postprocess = make_pre_post_processors(
+            config,
+            pretrained_path=str(checkpoint),
+            preprocessor_overrides={"device_processor": {"device": device}},
+        )
+        self.cameras = [key.removeprefix("observation.images.") for key in config.image_features]
+        self._calls = 0
+
+    @property
+    def needs_observation(self) -> bool:
+        """Whether the next ``act`` call starts a new chunk and so reads the images."""
+        return self._calls % self.config.n_action_steps == 0
+
+    def reset(self) -> None:
+        """Clear the action queue; call at the start of every episode."""
+        self.policy.reset()
+        self._calls = 0
+
+    def act(self, obs: dict[str, Any]) -> np.ndarray:
+        """Action for this control step: 7 arm joint targets and the hand closure (float32)."""
+        batch: dict[str, Any] = {
+            OBS_STATE: torch.from_numpy(np.asarray(obs["state"], dtype=np.float32)).unsqueeze(0),
+            "task": [obs["instruction"]],
+        }
+        if self.needs_observation:
+            missing = [cam for cam in self.cameras if cam not in obs.get("images", {})]
+            if missing:
+                raise ValueError(f"a new chunk needs images from {missing}")
+        for cam in self.cameras:
+            image = obs.get("images", {}).get(cam)
+            if image is None:  # mid-chunk: the policy does not read images
+                image = np.zeros((*self._image_hw(cam), 3), dtype=np.uint8)
+            tensor = torch.from_numpy(image).permute(2, 0, 1).float().div(255.0)
+            batch[image_key(cam)] = tensor.unsqueeze(0)
+        with torch.inference_mode():
+            action = self.policy.select_action(self.preprocess(batch))
+            action = self.postprocess(action)
+        self._calls += 1
+        return action.squeeze(0).float().cpu().numpy()
+
+    def _image_hw(self, camera: str) -> tuple[int, int]:
+        _, height, width = self.config.image_features[image_key(camera)].shape
+        return height, width
