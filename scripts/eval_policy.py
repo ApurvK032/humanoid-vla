@@ -30,6 +30,7 @@ logging.getLogger("lerobot.utils.import_utils").setLevel(logging.ERROR)
 
 import imageio.v2 as imageio
 import numpy as np
+import torch
 
 from humanoid_vla.data.scenarios import SPLIT_START, make_scenarios
 from humanoid_vla.envs.outcome import Outcome
@@ -119,6 +120,9 @@ def main() -> int:
                 views = zip(renderers, ("scene", "head", "wrist"), strict=True)
                 frames.append(np.hstack([r.render(env.data, cam) for r, cam in views]))
 
+        # SmolVLA samples each action chunk from noise; seeding per scenario makes a checkpoint's
+        # evaluation repeatable and gives every compared policy the same noise.
+        torch.manual_seed(int(scenario.rng().integers(2**31)))
         result = run_rollout(env, runner, scenario, on_step=record if renderers else None)
         if renderers:
             for r in renderers:
@@ -161,6 +165,7 @@ def main() -> int:
                 "layouts": [args.first_layout, args.first_layout + args.layouts],
                 "n_action_steps": args.n_action_steps,
                 "cameras": runner.cameras,
+                "noise_seed": "per scenario, from Scenario.rng()",
             },
             "summary": summary,
             "episodes": rows,
