@@ -180,11 +180,35 @@ Instructions are balanced in blocks of six layouts, and about a third of layouts
 a second instruction, so the policy cannot succeed by ignoring the language. Configs stay plain
 dataclasses, serialized into each dataset's manifest; a config framework is not needed yet.
 
+## D-023 Training through a recorded wrapper around `lerobot-train` (2026-10-13)
+
+`scripts/train_smolvla.py` runs LeRobot's own training script rather than a custom loop, so the
+optimizer, schedule and SmolVLA preprocessing are LeRobot's defaults (D-011). The base model is
+downloaded at the pinned revision (D-009) and passed as a local path, and the input and output
+features come from the dataset: the policy reads the head and wrist cameras and the 14 joint
+angles and predicts the 8-value action. The VLM's processor and configuration are fetched from
+the Hub by name when the model is built; the wrapper records the revision it saw. Each run keeps
+its full log and writes a manifest with the exact command, the base and dataset identities and
+the parsed loss history next to its checkpoints.
+
+## D-024 Closed-loop evaluation protocol (2026-10-13)
+
+Policies are judged by running them in the environment on layouts they were not trained on:
+development layouts while developing, test layouts only for final numbers. SmolVLA samples each
+action chunk from noise, so two unseeded evaluations of the pilot policy on the same 17 episodes
+gave 1 and 2 successes; each episode now seeds the noise from its scenario, which makes an
+evaluation repeatable and gives every compared checkpoint the same noise. Reported: success with
+a 95% Wilson interval, which block was lifted first (instruction following, separately from
+manipulation), behavior on layouts evaluated with both instructions, and inference time. The
+policy predicts 50 actions, executes the first N and then observes again; cameras render only on
+those observation steps.
+
 ## Open questions
 
 | Question | Decide in | Notes |
 |---|---|---|
 | Policy cameras: head only, or head + wrist | M3 | Both are recorded; choose by experiment. SmolVLA was pretrained with a top and a wrist camera |
+| Actions executed per chunk before observing again | M3 | Evaluation uses 10 of 50 (0.4 s) so far; compare a range |
 | fp32 master weights for the action expert | M3 | LeRobot trains the expert's bfloat16 weights directly; small updates can round away |
 | pi0.5 extension and cloud GPU budget | after M4 | Needs > 22.5 GB for LoRA (openpi) |
 | Project license | before release | Upstream code, models and assets are Apache-2.0 or BSD-3-Clause |
