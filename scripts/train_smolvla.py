@@ -32,25 +32,21 @@ from humanoid_vla.policies.smolvla import SMOLVLA_REPO, SMOLVLA_REVISION
 from humanoid_vla.utils.provenance import provenance, write_result
 
 DATA_ROOT = REPO_ROOT / "data" / "datasets"
-# LeRobot logs lines like "step:1K smpl:32K ep:170 epch:0.57 loss:0.123 grdn:4.5 lr:1.0e-04 ...".
-LOG_LINE = re.compile(r"step:(\S+) smpl:\S+ ep:\S+ epch:(\S+) (.*)")
+# LeRobot logs a line like "step:1K smpl:32K ep:170 epch:0.57 loss:0.123 grdn:4.5 ..." every
+# log_freq steps. Its step counts are rounded ("1K" covers 1000 to 1499), so steps are numbered
+# by the line's position instead.
+LOG_LINE = re.compile(r"step:\S+ smpl:\S+ ep:\S+ epch:(\S+) (.*)")
 METRIC = re.compile(r"(\w+):(\S+)")
 
 
-def parse_count(text: str) -> int:
-    """Parse LeRobot's compact counts: '850', '1K', '2.5K', '1M'."""
-    scale = {"K": 1_000, "M": 1_000_000, "B": 1_000_000_000}.get(text[-1], 1)
-    return round(float(text[:-1] if scale > 1 else text) * scale)
-
-
-def parse_log(lines: list[str]) -> list[dict]:
+def parse_log(lines: list[str], log_freq: int) -> list[dict]:
     rows = []
     for line in lines:
         match = LOG_LINE.search(line)
         if not match:
             continue
-        row = {"step": parse_count(match.group(1)), "epoch": float(match.group(2))}
-        for name, value in METRIC.findall(match.group(3)):
+        row = {"step": (len(rows) + 1) * log_freq, "epoch": float(match.group(1))}
+        for name, value in METRIC.findall(match.group(2)):
             try:
                 row[name] = float(value)
             except ValueError:
@@ -129,14 +125,16 @@ def main() -> int:
         for line in process.stdout:
             log.write(line)
             lines.append(line)
-            if LOG_LINE.search(line) or "error" in line.lower():
+            if LOG_LINE.search(line):
                 print(line.rstrip(), flush=True)
         returncode = process.wait()
     wall_s = time.perf_counter() - start
     if output_dir.exists():
         shutil.move(log_path, output_dir / "train.log")
 
-    history = parse_log(lines)
+    if returncode != 0:
+        print("".join(lines[-30:]), file=sys.stderr)
+    history = parse_log(lines, args.log_freq)
     run = {
         "run": args.run,
         "returncode": returncode,
