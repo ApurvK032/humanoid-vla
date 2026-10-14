@@ -12,7 +12,6 @@ side) go to outputs/m3/; ``--gif`` also writes the first one as a small GIF.
 """
 
 import argparse
-import collections
 import json
 import logging
 import os
@@ -33,53 +32,17 @@ import numpy as np
 import torch
 
 from humanoid_vla.data.scenarios import SPLIT_START, make_scenarios
-from humanoid_vla.envs.outcome import Outcome
 from humanoid_vla.envs.sort import SortEnv, SortEnvConfig
 from humanoid_vla.evaluation.rollout import run_rollout
+from humanoid_vla.evaluation.summary import summarize
 from humanoid_vla.paths import OUTPUTS_DIR, REPO_ROOT, RESULTS_DIR
 from humanoid_vla.policies.runner import PolicyRunner
 from humanoid_vla.sim.render import CameraRenderer
 from humanoid_vla.utils.media import write_gif
 from humanoid_vla.utils.provenance import provenance, write_result
-from humanoid_vla.utils.stats import wilson_interval
 
 VIDEO_HEIGHT = 360
 GIF_WIDTH = 720
-
-
-def summarize(rows: list[dict]) -> dict:
-    n = len(rows)
-    wins = sum(r["outcome"] == Outcome.SUCCESS for r in rows)
-    picked = sum(r["picked_target"] for r in rows)
-    low, high = wilson_interval(wins, n)
-    by_instruction: dict[str, list[int]] = collections.defaultdict(lambda: [0, 0])
-    for r in rows:
-        counts = by_instruction[f"{r['target']}->{r['destination']}"]
-        counts[0] += r["outcome"] == Outcome.SUCCESS
-        counts[1] += 1
-    by_seed = collections.defaultdict(list)
-    for r in rows:
-        by_seed[r["seed"]].append(r)
-    pairs = [v for v in by_seed.values() if len(v) == 2]
-    return {
-        "episodes": n,
-        "successes": wins,
-        "success_rate": round(wins / n, 4),
-        "success_rate_wilson95": [round(low, 4), round(high, 4)],
-        "outcomes": dict(collections.Counter(r["outcome"] for r in rows)),
-        "picked_instructed_block_first": round(picked / n, 4),
-        "lifted_nothing": sum(r["first_lifted"] is None for r in rows),
-        "by_instruction": {
-            key: {"successes": s, "episodes": t} for key, (s, t) in sorted(by_instruction.items())
-        },
-        "paired_layouts": {
-            "pairs": len(pairs),
-            "both_picked_instructed_block": sum(all(r["picked_target"] for r in p) for p in pairs),
-            "both_succeeded": sum(all(r["outcome"] == Outcome.SUCCESS for r in p) for p in pairs),
-        },
-        "mean_inference_ms": round(float(np.mean([r["inference_ms"] for r in rows])), 1),
-        "mean_episode_s": round(float(np.mean([r["duration_s"] for r in rows])), 2),
-    }
 
 
 def main() -> int:
@@ -147,12 +110,14 @@ def main() -> int:
     env.close()
 
     low, high = summary["success_rate_wilson95"]
-    pairs = summary["paired_layouts"]
+    blocks = summary["paired_layouts"]["different_blocks"]
+    bins = summary["paired_layouts"]["same_block_different_bins"]
     print(
         f"Success {summary['successes']}/{summary['episodes']} = {summary['success_rate']:.1%} "
-        f"(95% CI {low:.1%}-{high:.1%}); picked the instructed block first in "
-        f"{summary['picked_instructed_block_first']:.0%}; paired layouts with both instructions "
-        f"followed: {pairs['both_picked_instructed_block']}/{pairs['pairs']}; "
+        f"(95% CI {low:.1%}-{high:.1%}); outcomes {summary['outcomes']}; picked the instructed "
+        f"block first in {summary['picked_instructed_block_first']:.0%}; layout pairs following "
+        f"both instructions: block {blocks['both_picked_instructed_block']}/{blocks['pairs']}, "
+        f"bin {bins['both_in_instructed_bin']}/{bins['pairs']}; "
         f"{summary['mean_inference_ms']} ms per chunk"
     )
     if args.save:
