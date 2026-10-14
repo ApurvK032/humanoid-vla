@@ -96,7 +96,9 @@ Seeds 0-99 were used to develop the scripted expert; evaluate it on seeds from 1
   when contexts are garbage-collected at interpreter exit.
 - Under WSL2, CUDA allocations beyond the 12 GB of VRAM do not raise out-of-memory errors: the
   driver spills into system memory and training slows about 20x. Compare peak reserved memory
-  with VRAM explicitly (`scripts/check_smolvla.py` does).
+  with VRAM explicitly (`scripts/check_smolvla.py` does). Training with `--train-vlm` uses
+  10.8 GB of the GPU: run nothing else on the GPU meanwhile (a 1-minute probe beside it stalled
+  the run for good; it had to restart). Expert-only training (7.7 GB) leaves room for a probe.
 - LeRobot loads `smolvla_base` with the VLM and the action expert in bfloat16; the expert's
   trainable weights and AdamW state are bfloat16 too, and small updates round away.
   `train_smolvla.py --float32-expert` trains it in float32; the runner detects such checkpoints.
