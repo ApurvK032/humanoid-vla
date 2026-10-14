@@ -5,7 +5,7 @@ import numpy as np
 from humanoid_vla.data.scenarios import make_scenarios
 from humanoid_vla.envs.sort import SortEnv, SortEnvConfig
 from humanoid_vla.envs.task import COLORS
-from humanoid_vla.evaluation.probe import probe_layout
+from humanoid_vla.evaluation.probe import CHUNK_STEPS, probe_layout
 from humanoid_vla.policies.expert import ScriptedExpert
 
 
@@ -19,8 +19,8 @@ class ExpertPolicy:
         self.expert = ScriptedExpert(self.env)
         self.expert.reset()
 
-    def act(self, obs: dict[str, Any]) -> np.ndarray:
-        return self.expert.act()
+    def predict_chunk(self, obs: dict[str, Any]) -> np.ndarray:
+        return np.array([self.expert.act() for _ in range(CHUNK_STEPS)])
 
 
 class BlindPolicy:
@@ -32,8 +32,8 @@ class BlindPolicy:
     def reset(self) -> None:
         pass
 
-    def act(self, obs: dict[str, Any]) -> np.ndarray:
-        return self.action
+    def predict_chunk(self, obs: dict[str, Any]) -> np.ndarray:
+        return np.tile(self.action, (CHUNK_STEPS, 1))
 
 
 def test_probe_tells_instruction_following_from_ignoring_it() -> None:

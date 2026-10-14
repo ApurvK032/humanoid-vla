@@ -74,7 +74,7 @@ class HandKinematics:
 def probe_layout(
     env: SortEnv, policy: Any, seed: int, destination: str = "left", noise_seed: int = 0
 ) -> LayoutProbe:
-    """Name each block in turn on one layout; ``policy`` must execute whole chunks."""
+    """Name each block in turn on one layout; ``policy`` predicts whole action chunks."""
     kinematics = HandKinematics(env)
     blocks_xy: dict[str, np.ndarray] = {}
     policy_xy: dict[str, np.ndarray] = {}
@@ -86,13 +86,17 @@ def probe_layout(
         blocks_xy = {c: np.asarray(positions[c][:2]) for c in COLORS}
         torch.manual_seed(noise_seed)
         policy.reset()
-        chunk = [policy.act(obs) for _ in range(CHUNK_STEPS)]
-        policy_xy[target] = kinematics.xy(chunk[-1][:7])
+        chunk = policy.predict_chunk(obs)
+        policy_xy[target] = kinematics.xy(chunk[CHUNK_STEPS - 1][:7])
 
         expert = ScriptedExpert(env)
         expert.reset()
-        for _ in range(CHUNK_STEPS):
-            action = expert.act()
-            env.step(action)
+        env.render_images = False  # the expert reads the simulator's state, not images
+        try:
+            for _ in range(CHUNK_STEPS):
+                action = expert.act()
+                env.step(action)
+        finally:
+            env.render_images = True
         expert_xy[target] = kinematics.xy(action[:7])
     return LayoutProbe(seed, blocks_xy, policy_xy, expert_xy)

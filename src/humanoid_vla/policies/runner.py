@@ -59,25 +59,39 @@ class PolicyRunner:
 
     def act(self, obs: dict[str, Any]) -> np.ndarray:
         """Action for this control step: 7 arm joint targets and the hand closure (float32)."""
+        if self.needs_observation:
+            self._check_images(obs)
+        with torch.inference_mode():
+            action = self.policy.select_action(self.preprocess(self._batch(obs)))
+            action = self.postprocess(action)
+        self._calls += 1
+        return action.squeeze(0).float().cpu().numpy()
+
+    def predict_chunk(self, obs: dict[str, Any]) -> np.ndarray:
+        """The whole chunk the policy predicts from ``obs``: ``chunk_size`` actions (float32)."""
+        self._check_images(obs)
+        with torch.inference_mode():
+            chunk = self.policy.predict_action_chunk(self.preprocess(self._batch(obs)))
+            chunk = self.postprocess(chunk)
+        return chunk.squeeze(0).float().cpu().numpy()
+
+    def _check_images(self, obs: dict[str, Any]) -> None:
+        missing = [cam for cam in self.cameras if cam not in obs.get("images", {})]
+        if missing:
+            raise ValueError(f"a new chunk needs images from {missing}")
+
+    def _batch(self, obs: dict[str, Any]) -> dict[str, Any]:
         batch: dict[str, Any] = {
             OBS_STATE: torch.from_numpy(np.asarray(obs["state"], dtype=np.float32)).unsqueeze(0),
             "task": [obs["instruction"]],
         }
-        if self.needs_observation:
-            missing = [cam for cam in self.cameras if cam not in obs.get("images", {})]
-            if missing:
-                raise ValueError(f"a new chunk needs images from {missing}")
         for cam in self.cameras:
             image = obs.get("images", {}).get(cam)
             if image is None:  # mid-chunk: the policy does not read images
                 image = np.zeros((*self._image_hw(cam), 3), dtype=np.uint8)
             tensor = torch.from_numpy(image).permute(2, 0, 1).float().div(255.0)
             batch[image_key(cam)] = tensor.unsqueeze(0)
-        with torch.inference_mode():
-            action = self.policy.select_action(self.preprocess(batch))
-            action = self.postprocess(action)
-        self._calls += 1
-        return action.squeeze(0).float().cpu().numpy()
+        return batch
 
     def _image_hw(self, camera: str) -> tuple[int, int]:
         _, height, width = self.config.image_features[image_key(camera)].shape
