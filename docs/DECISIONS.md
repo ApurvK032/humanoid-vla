@@ -234,5 +234,5 @@ episodes. Which of the two changes mattered is an open question.
 | Longer schedule or float32 weights: which made the block word learnable | when GPU time allows | A 50,000-step bfloat16 run on v2 separates them; v1 data with the D-026 recipe tests whether full pairing matters |
 | Policy cameras: head only, or head + wrist | M4 or later | Every M3 run used both; `--cameras=head` is ready. SmolVLA was pretrained with a top and a wrist camera |
 | Actions executed per chunk before observing again | M4 | Evaluations use 10 of 50 (0.4 s); compare a range alongside the observation-delay perturbation |
-| pi0.5 extension and cloud GPU budget | after M4 | Needs > 22.5 GB for LoRA (openpi) |
+| pi0.5 extension | after M4 | Planned on a lab RTX 5090 (32 GB) when free for several days: LeRobot 0.6.1 ships a PyTorch `pi05` policy; train with the VLM frozen or LoRA (openpi lists > 22.5 GB for LoRA), evaluate on the RTX 4070 |
 | Project license | before release | Upstream code, models and assets are Apache-2.0 or BSD-3-Clause |
