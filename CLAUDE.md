@@ -38,6 +38,7 @@ src/humanoid_vla/
   data/replay.py      replaying recorded actions to verify alignment and semantics
   evaluation/rollout.py  one closed-loop episode: outcome, first block lifted, final bins
   evaluation/summary.py  success with Wilson interval, instruction following, paired layouts
+  evaluation/probe.py    open-loop probe: where the first chunk sends the hand per instruction
   utils/provenance.py git commit, versions and GPU recorded with every result file
   utils/stats.py      Wilson intervals for success rates
   utils/media.py      small GIFs for the documentation
