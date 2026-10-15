@@ -32,12 +32,13 @@ makes it more robust.
   different instructions, follows both 13 times out of 17.
 - **A diagnosed language-grounding failure.** Three training runs whose loss kept falling
   learned to grasp and to follow the bin word ("left", "right") almost without fail, yet chose
-  the block at chance. An open-loop instruction probe pinned it down, and a 2.5x longer
-  schedule with float32 action-expert weights made the policy learn the color word.
+  the block at chance. An open-loop instruction probe pinned it down: a 2.5x longer schedule
+  taught the policy the color word, and float32 action-expert weights made it more reliable.
 - **A precision issue in the training stack.** LeRobot trains SmolVLA's action expert directly
   in bfloat16, without float32 master weights: in a pilot run only 24% of the expert's weights
   changed at all in the second half of training. The project adds float32 expert training and
-  inference.
+  inference; a controlled bfloat16 run learned the color word as fast but succeeded in 41 of 70
+  episodes instead of 51.
 - **Physical-contact grasping.** The scripted expert sorts blocks in 499 of 500 held-out layouts
   with a palm-down "claw" pinch of the Dex3 hand: no welds, no hidden forces.
 - **Reproducible by construction.** Pinned versions and Hub revisions, datasets whose every
@@ -56,6 +57,7 @@ the policy observes every 0.4 s and predicts 2-second action chunks), from
 | `smolvla_v2` | every training layout under two instructions | 16/70 (23%) | 26% |
 | `smolvla_v2_vlm` | v2, plus the VLM's text layers trained | 12/70 (17%) | 20% |
 | `smolvla_v2_long_fp32` | v2, 50,000 steps, float32 expert weights | **51/70 (73%)** | **80%** |
+| `smolvla_v2_long_bf16` | control: the same run without float32 weights | 41/70 (59%) | 59% |
 
 The open-loop probe names each block in turn on the same layout and checks where the policy's
 first action chunk sends the hand. The scripted expert sends it nearest the named block every
@@ -65,6 +67,7 @@ time; a policy that ignores the block word scores 33% by chance.
 |---|---|---|---|---|---|
 | The three 20,000-step runs | 33-37% | 37-42% | | | |
 | `smolvla_v2_long_fp32` | 33% | 48% | 78% | 85% | 85% |
+| `smolvla_v2_long_bf16` | 33% | 57% | 73% | 82% | 85% |
 
 The full story, from the pilot to the bug hunt, is in the
 [M3 report](docs/reports/m3-first-policy.md).
