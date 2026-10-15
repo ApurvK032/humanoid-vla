@@ -8,8 +8,8 @@ Living status of the project. The full plan, scope and rationale are in
 | M0 Feasibility | done (2026-10-12) | Simulation and a genuine SmolVLA parameter update work locally with memory headroom |
 | M1 Scripted expert | done (2026-10-12) | Expert reliably picks and places blocks by physical contact across a declared region |
 | M2 Dataset | done (2026-10-13) | LeRobot dataset loads, and an episode replays through the same action interface |
-| M3 First policy | in progress | Fine-tuned SmolVLA completes held-out layouts in closed loop |
-| M4 Failure suite | not started | Reproducible perturbed scenarios with categorized failures |
+| M3 First policy | done (2026-10-15) | Fine-tuned SmolVLA completes held-out layouts in closed loop |
+| M4 Failure suite | next | Reproducible perturbed scenarios with categorized failures |
 | M5 Adaptation study | not started | Conditions A/B/C compared on the frozen test split |
 | M6 Release | not started | Verified install, demo checkpoint, dataset and model on the Hub, report, video |
 
@@ -63,11 +63,13 @@ Details and measurements: [M2 report](reports/m2-dataset.md). Contract:
 - [x] Replay check: every recorded episode reproduces its joint states exactly and succeeds
 - [x] Config handling: dataclass configs serialized into manifests (no framework needed yet)
 
-## M3 First policy (in progress)
+## M3 First policy
 
-- [ ] Training run on `g1_sort_v1` with LeRobot's default SmolVLA fine-tuning at batch size 32
-  (D-011, D-023), recording base checkpoint, trainable modules, optimizer, effective batch size,
-  seed, update count and dataset identity (`smolvla_v1`, 20,000 steps, running)
+Details and measurements: [M3 report](reports/m3-first-policy.md).
+
+- [x] Training runs with LeRobot's SmolVLA fine-tuning at batch size 32 (D-011, D-023), each
+  recording base checkpoint, trainable modules, optimizer, batch size, seed, update count and
+  dataset identity: `smolvla_v1`, `smolvla_v2`, `smolvla_v2_vlm`, `smolvla_v2_long_fp32`
 - [x] Data-loading throughput with PyAV decoding: 0.005 s of loading per 0.63 s step, so no
   caching or pre-decoding
 - [x] Overfit check on the pilot dataset: loss 1.40 to 0.043 in 2,000 steps, but 2 of 17
@@ -75,10 +77,16 @@ Details and measurements: [M2 report](reports/m2-dataset.md). Contract:
 - [x] Closed-loop rollout: observe, predict a 50-action chunk, execute N actions, re-observe;
   reset the policy queue each episode; denormalization, clipping and image preprocessing checked
   against the dataset; policy noise seeded per episode (D-024)
-- [ ] Development rollouts of each 5,000-step checkpoint to catch a falling loss with broken
-  behavior
-- [ ] Actions executed per chunk before observing again
-- [ ] Action expert in float32 versus LeRobot's bfloat16 (`--float32-expert`)
-- [ ] Cameras: head only versus head + wrist (`--cameras=head`)
-- [ ] Exit: autonomous success on held-out development layouts, a video, and instruction
-  sensitivity measured on identical layouts with different instructions
+- [x] Development rollouts of every saved checkpoint, plus an open-loop instruction probe, which
+  caught three runs whose falling loss hid a policy that ignored the block word
+- [x] Every training layout under two instructions (`g1_sort_v2`, D-025): no effect at 20,000
+  steps
+- [x] VLM text layers trained (`--train-vlm`): no effect on instruction following
+- [x] 2.5x longer training with float32 action-expert weights (D-026): 51 of 70 successes,
+  instructed block first in 80%
+- [x] Exit: autonomous success on held-out development layouts (51/70), videos, and instruction
+  sensitivity on identical layouts with different instructions (both followed on 13 of 17 pairs)
+
+Moved to later milestones: actions executed per chunk (evaluations use 10 of 50), head-only
+versus head + wrist cameras, and whether the longer schedule or float32 weights made the
+difference (see the open questions in [DECISIONS.md](DECISIONS.md)).
