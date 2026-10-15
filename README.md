@@ -7,19 +7,20 @@ bin". It then measures where the policy breaks under camera, latency and
 actuator errors, and tests whether targeted training data makes it more
 robust.
 
-![The scripted expert sorting a block: scene camera (left) and the robot's head camera (right)](docs/media/m1_expert.gif)
-*The scripted expert placing a block in the bin it was asked for, by physical contact: scene
-camera (left) and the head camera a policy will see (right).*
+![The fine-tuned SmolVLA policy on one table under two instructions](docs/media/m3_policy_pair.gif)
+*The fine-tuned SmolVLA policy on a table it never trained on, given two instructions: "Put the
+green block in the right bin" (left) and "Put the blue block in the left bin" (right). It sees
+only its cameras, its joint angles and the sentence.*
 
-**Status (2026-10-13):** Milestones 0-2 are complete. A scripted expert sorts blocks in 499 of
-500 held-out layouts ([M1 report](docs/reports/m1-scripted-expert.md)), and its demonstrations
-are recorded as a LeRobot dataset of 300 training episodes with head and wrist
-cameras, every one of which replays exactly ([M2 report](docs/reports/m2-dataset.md)). SmolVLA
-fine-tuning fits on one RTX 4070 ([M0 report](docs/reports/m0-feasibility.md)). Milestone 3,
-fine-tuning SmolVLA on the dataset, is in progress: training and closed-loop evaluation run end
-to end, and a pilot policy trained on 55 episodes succeeded in only 2 of 17 episodes on its own
-training layouts. The first full training run is under way. Numbers, videos and claims are
-added only once measured.
+**Status (2026-10-15):** Milestones 0-3 are complete. The fine-tuned SmolVLA policy succeeds in
+51 of 70 episodes on held-out layouts (73%, 95% interval 61-82%) and goes for the instructed block
+first in 80% of them ([M3 report](docs/reports/m3-first-policy.md)). Getting there took a
+diagnosis: three 20,000-step runs grasped well and followed the bin word but chose the block at
+chance, and only a 2.5x longer run with float32 action-expert weights learned the block word.
+The scripted expert behind the demonstrations sorts blocks in 499 of 500 held-out layouts
+([M1 report](docs/reports/m1-scripted-expert.md)), and every recorded episode replays exactly
+([M2 report](docs/reports/m2-dataset.md)). Next is the failure suite (M4). Numbers, videos and
+claims are added only once measured.
 
 ## Quick start
 
@@ -33,8 +34,8 @@ uv run pytest                                     # simulation, interface and ex
 uv run python scripts/run_expert.py --videos 1    # scripted expert on held-out layouts
 ```
 
-Each step has a `make` shortcut. Setup details and troubleshooting are in the
-[runbook](docs/RUNBOOK.md).
+Each step has a `make` shortcut. Recording datasets, training SmolVLA and evaluating a policy,
+plus setup details and troubleshooting, are in the [runbook](docs/RUNBOOK.md).
 
 ## Pipeline
 
@@ -56,7 +57,7 @@ flowchart LR
 | Task | "Put the {red, green, blue} block in the {left, right} bin.": three 5 cm blocks placed at random, two bins |
 | Observations | 256x256 RGB from a head camera and a wrist camera, 14 arm and hand joint angles, instruction text |
 | Actions | At 25 Hz: 7 arm joint targets (limited to 2 rad/s) and 1 hand-closure value that drives a two-stage finger synergy |
-| Policy | [SmolVLA](https://huggingface.co/docs/lerobot/smolvla) (450M) with [LeRobot](https://github.com/huggingface/lerobot) and PyTorch; default fine-tuning compared with LoRA |
+| Policy | [SmolVLA](https://huggingface.co/docs/lerobot/smolvla) (450M) with [LeRobot](https://github.com/huggingface/lerobot) and PyTorch; the action expert and projections fine-tuned (VLM frozen), with float32 expert weights |
 | Simulator | MuJoCo 3.14 with a Gymnasium-style wrapper |
 | Compute | One RTX 4070 (12 GB) under WSL2 |
 
@@ -65,6 +66,25 @@ learned policy never does. Grasps are physical contact. Objects are not welded
 to the hand.
 
 ## Results so far
+
+**First policy (M3).** On 50 held-out development layouts (70 episodes, the policy observing
+every 0.4 s), from [`results/m3/`](results/m3/):
+
+| Run | Change | Success (final checkpoint) | Instructed block first |
+|---|---|---|---|
+| `smolvla_v1` | LeRobot default, 20,000 steps | 21/70 (30%) | 30% |
+| `smolvla_v2` | every training layout under two instructions | 16/70 (23%) | 26% |
+| `smolvla_v2_vlm` | v2 plus the VLM's text layers trained | 12/70 (17%) | 20% |
+| `smolvla_v2_long_fp32` | v2, 50,000 steps, float32 expert weights | **51/70 (73%)** | **80%** |
+
+The 20,000-step runs placed every block in the instructed bin but lifted the instructed block no
+more often than chance. A probe that names each block in turn on the same layout showed the
+longer run learning the block word between 10,000 and 30,000 steps. On layouts evaluated with
+two instructions naming different blocks, it follows both on 13 of 17; the earlier runs, on none.
+
+![The scripted expert sorting a block: scene camera (left) and the robot's head camera (right)](docs/media/m1_expert.gif)
+*The scripted expert behind the demonstrations, placing a block by physical contact: scene
+camera (left) and the head camera the policy sees (right).*
 
 **Scripted expert (M1).** 499 of 500 episodes succeed on held-out layouts
 (99.8%, 95% interval 98.9%-100.0%); a typical episode takes 7.56 s. The
@@ -127,8 +147,8 @@ completion time, inference latency, simulation throughput and peak VRAM.
   resets and labeled outcomes
 - [x] **M2 Dataset:** LeRobot-format dataset with a documented action
   contract, scenario splits and a replay check
-- [ ] **M3 First policy:** fine-tuned SmolVLA completing held-out layouts in
-  closed loop
+- [x] **M3 First policy:** fine-tuned SmolVLA completing held-out layouts in
+  closed loop (51 of 70)
 - [ ] **M4 Failure suite:** reproducible perturbed scenarios and failure
   categories
 - [ ] **M5 Adaptation study:** conditions A, B and C on the frozen test split

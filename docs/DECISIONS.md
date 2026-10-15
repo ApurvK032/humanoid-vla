@@ -207,12 +207,32 @@ manipulation), behavior on layouts evaluated with both instructions, and inferen
 policy predicts 50 actions, executes the first N and then observes again; cameras render only on
 those observation steps.
 
+## D-025 Every training layout under two instructions (2026-10-14)
+
+The 20,000-step policy trained on `g1_sort_v1` placed every block in the instructed bin (41 of
+41) but chose the block at chance. With a third of the layouts under two instructions, the target
+can often be read off the image, so `g1_sort_v2` records 150 layouts under two instructions each
+(295 episodes, the size of v1; `collect_dataset.py --paired-fraction 1.0`). At 20,000 steps it
+changed nothing measurable (16 of 70 successes). It is the dataset of the final policy (D-026);
+whether full pairing matters at that training length has not been separated.
+
+## D-026 Longer training with float32 action-expert weights (2026-10-15)
+
+Three 20,000-step runs never learned the block word. The probe's spread across instructions grew
+slowly until the learning rate decayed: LeRobot fits its cosine schedule to the run, so a
+20,000-step run ends at 2.5e-6, where bfloat16 weights barely change (in the pilot, 24% of the
+expert's weights changed at all in the second half). The M3 recipe trains 50,000 steps with the
+decay spread over the whole run (`-- --policy.scheduler_decay_steps=50000`) and keeps the action
+expert in float32 (`--float32-expert`; 8.5 GB, 4% slower). The block word appeared between
+10,000 and 30,000 steps, and the 50,000-step checkpoint succeeds in 51 of 70 development
+episodes. Which of the two changes mattered is an open question.
+
 ## Open questions
 
 | Question | Decide in | Notes |
 |---|---|---|
-| Policy cameras: head only, or head + wrist | M3 | Both are recorded; choose by experiment. SmolVLA was pretrained with a top and a wrist camera |
-| Actions executed per chunk before observing again | M3 | Evaluation uses 10 of 50 (0.4 s) so far; compare a range |
-| fp32 master weights for the action expert | M3 | LeRobot trains the expert's bfloat16 weights directly; small updates can round away |
+| Longer schedule or float32 weights: which made the block word learnable | when GPU time allows | A 50,000-step bfloat16 run on v2 separates them; v1 data with the D-026 recipe tests whether full pairing matters |
+| Policy cameras: head only, or head + wrist | M4 or later | Every M3 run used both; `--cameras=head` is ready. SmolVLA was pretrained with a top and a wrist camera |
+| Actions executed per chunk before observing again | M4 | Evaluations use 10 of 50 (0.4 s); compare a range alongside the observation-delay perturbation |
 | pi0.5 extension and cloud GPU budget | after M4 | Needs > 22.5 GB for LoRA (openpi) |
 | Project license | before release | Upstream code, models and assets are Apache-2.0 or BSD-3-Clause |
