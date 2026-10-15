@@ -16,11 +16,13 @@ development layouts (73%, 95% interval 61-82%), goes for the instructed block fi
 and follows both instructions on 13 of 17 layouts evaluated with two instructions that name
 different blocks. Videos of four episodes are recorded.
 
-It took four runs. Three 20,000-step runs learned to grasp, carry and place, and to read the bin
-word, but chose the block at chance. Recording every layout under two instructions and training
-the VLM's text layers did not change that. A run 2.5 times longer, with the learning rate
-decaying over the whole run and float32 action-expert weights, learned the block word between
-10,000 and 30,000 steps.
+It took four runs and a control. Three 20,000-step runs learned to grasp, carry and place, and
+to read the bin word, but chose the block at chance. Recording every layout under two
+instructions and training the VLM's text layers did not change that. A run 2.5 times longer,
+with the learning rate decaying over the whole run and float32 action-expert weights, learned the
+block word between 10,000 and 30,000 steps. A bfloat16 control of that run learned the block word
+just as fast but succeeded less often (41 of 70): the longer schedule teaches the block word, and
+float32 weights make the final policy more reliable.
 
 | Run | Change | Success, final checkpoint | Instructed block first |
 |---|---|---|---|
@@ -28,6 +30,7 @@ decaying over the whole run and float32 action-expert weights, learned the block
 | `smolvla_v2` | every training layout under two instructions (`g1_sort_v2`) | 16/70 (23%) | 26% |
 | `smolvla_v2_vlm` | v2 plus the VLM's text layers trained | 12/70 (17%) | 20% |
 | `smolvla_v2_long_fp32` | v2, 50,000 steps, float32 expert weights | 51/70 (73%) | 80% |
+| `smolvla_v2_long_bf16` | control: the same without float32 weights | 41/70 (59%) | 59% |
 
 ## Training setup
 
@@ -206,15 +209,35 @@ bfloat16 weights changed at all during the first 1,000 steps, and 24% during the
 the learning rate decayed, against 99% of the float32 projection weights in both. The base
 model's expert values are all exactly representable in bfloat16, so rounding of the base does not
 inflate these counts. `--float32-expert` builds the expert in float32 for training and inference
-(on the CPU its chunk predictions match the bfloat16 model's within 0.0004 rad). The final run
-uses it together with the longer schedule; which of the two made the difference has not been
-separated.
+(on the CPU its chunk predictions match the bfloat16 model's within 0.0004 rad). The control run
+below separates its effect from the longer schedule's.
+
+## Which change mattered: a bfloat16 control
+
+`smolvla_v2_long_bf16` repeats the final run exactly (v2, 50,000 steps, the same schedule, seed
+and batch) with the action expert left in bfloat16 (529 min):
+
+| | float32 expert | bfloat16 expert |
+|---|---|---|
+| Probe at 10k / 20k / 30k / 40k / 50k | 33 / 48 / 78 / 85 / 85% | 33 / 57 / 73 / 82 / 85% |
+| Final training loss | 0.007 | 0.011 |
+| Success at 30,000 steps | 42/70 (48-71%) | 29/70 (31-53%) |
+| Success at 50,000 steps | 51/70 (61-82%) | 41/70 (47-69%) |
+| Instructed block lifted first at 50,000 | 80% | 59% |
+| Wrong block placed at 50,000 | 3 | 12 |
+| Layout pairs, both blocks followed, at 50,000 | 13 of 17 | 9 of 17 |
+
+The longer schedule is what teaches the block word: in the open-loop probe both runs learn it at
+the same pace. Float32 weights add closed-loop reliability on top: the bfloat16 run ends at a
+higher loss and, re-planning every 0.4 s with fresh noise, switches to a wrong block more often.
+That fits the pilot's measurement that most small, late updates to bfloat16 weights round away.
+This is one run per condition; at 50,000 steps the intervals overlap slightly, so the size of
+the gap is uncertain, but it points the same way at both evaluated checkpoints.
 
 ## Not measured in M3
 
-- **Which change taught the block word**: the longer schedule, float32 weights, or both. A
-  50,000-step bfloat16 run on v2 would separate them; v1 data with the final recipe would show
-  whether full pairing matters at that length.
+- **Whether full pairing matters at this training length**: v1 data with the final recipe would
+  show it.
 - **Actions executed per chunk**: every evaluation executed 10 of 50 (0.4 s).
 - **Cameras**: every run used the head and wrist cameras; `--cameras=head` is ready.
 

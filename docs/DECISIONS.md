@@ -227,11 +227,20 @@ expert in float32 (`--float32-expert`; 8.5 GB, 4% slower). The block word appear
 10,000 and 30,000 steps, and the 50,000-step checkpoint succeeds in 51 of 70 development
 episodes. Which of the two changes mattered is an open question.
 
+## D-027 Float32 action-expert weights stay in the recipe (2026-10-15)
+
+A bfloat16 control of the D-026 run (same data, schedule, seed and batch) learned the block word
+on the same schedule in the open-loop probe (85% at 50,000 steps for both) but ended at a higher
+loss (0.011 against 0.007) and succeeded less often in closed loop: 29 against 42 of 70 at
+30,000 steps and 41 against 51 of 70 at 50,000. The longer schedule is what makes the block word
+learnable; float32 weights make the final policy more reliable. One run per condition, so the
+size of the gap is uncertain.
+
 ## Open questions
 
 | Question | Decide in | Notes |
 |---|---|---|
-| Longer schedule or float32 weights: which made the block word learnable | when GPU time allows | A 50,000-step bfloat16 run on v2 separates them; v1 data with the D-026 recipe tests whether full pairing matters |
+| Does full pairing (v2) matter with the D-026 recipe | when GPU time allows | v1 data with the D-026 recipe answers it |
 | Policy cameras: head only, or head + wrist | M4 or later | Every M3 run used both; `--cameras=head` is ready. SmolVLA was pretrained with a top and a wrist camera |
 | Actions executed per chunk before observing again | M4 | Evaluations use 10 of 50 (0.4 s); compare a range alongside the observation-delay perturbation |
 | pi0.5 extension | after M4 | Planned on a lab RTX 5090 (32 GB) when free for several days: LeRobot 0.6.1 ships a PyTorch `pi05` policy; train with the VLM frozen or LoRA (openpi lists > 22.5 GB for LoRA), evaluate on the RTX 4070 |

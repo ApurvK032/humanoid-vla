@@ -84,9 +84,11 @@ Details and measurements: [M3 report](reports/m3-first-policy.md).
 - [x] VLM text layers trained (`--train-vlm`): no effect on instruction following
 - [x] 2.5x longer training with float32 action-expert weights (D-026): 51 of 70 successes,
   instructed block first in 80%
+- [x] Bfloat16 control of that run (D-027): the block word is learned on the same schedule, but
+  success drops to 41 of 70, so float32 weights stay
 - [x] Exit: autonomous success on held-out development layouts (51/70), videos, and instruction
   sensitivity on identical layouts with different instructions (both followed on 13 of 17 pairs)
 
 Moved to later milestones: actions executed per chunk (evaluations use 10 of 50), head-only
-versus head + wrist cameras, and whether the longer schedule or float32 weights made the
-difference (see the open questions in [DECISIONS.md](DECISIONS.md)).
+versus head + wrist cameras, and whether full pairing matters with the final recipe (see the open
+questions in [DECISIONS.md](DECISIONS.md)).
