@@ -15,6 +15,9 @@ class ExpertPolicy:
     def __init__(self, env: SortEnv) -> None:
         self.env = env
 
+    def seed(self, seed: int) -> None:
+        pass
+
     def reset(self) -> None:
         self.expert = ScriptedExpert(self.env)
         self.expert.reset()
@@ -28,6 +31,9 @@ class BlindPolicy:
 
     def __init__(self, action: np.ndarray) -> None:
         self.action = action
+
+    def seed(self, seed: int) -> None:
+        pass
 
     def reset(self) -> None:
         pass

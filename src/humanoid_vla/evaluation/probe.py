@@ -9,11 +9,10 @@ that happens after the first chunk.
 """
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Protocol
 
 import mujoco
 import numpy as np
-import torch
 
 from humanoid_vla.envs.sort import SortEnv
 from humanoid_vla.envs.task import COLORS
@@ -21,6 +20,16 @@ from humanoid_vla.policies.expert import ScriptedExpert
 from humanoid_vla.sim.g1 import GRASP_SITE
 
 CHUNK_STEPS = 50  # SmolVLA's chunk: 2 s at 25 Hz
+
+
+class ChunkPolicy(Protocol):
+    """What the probe needs from a policy: seeded noise and whole predicted chunks."""
+
+    def seed(self, seed: int) -> None: ...
+
+    def reset(self) -> None: ...
+
+    def predict_chunk(self, obs: dict[str, Any]) -> np.ndarray: ...
 
 
 @dataclass(frozen=True)
@@ -72,9 +81,9 @@ class HandKinematics:
 
 
 def probe_layout(
-    env: SortEnv, policy: Any, seed: int, destination: str = "left", noise_seed: int = 0
+    env: SortEnv, policy: ChunkPolicy, seed: int, destination: str = "left", noise_seed: int = 0
 ) -> LayoutProbe:
-    """Name each block in turn on one layout; ``policy`` predicts whole action chunks."""
+    """Name each block in turn on one layout, with the same policy noise for each."""
     kinematics = HandKinematics(env)
     blocks_xy: dict[str, np.ndarray] = {}
     policy_xy: dict[str, np.ndarray] = {}
@@ -84,7 +93,7 @@ def probe_layout(
         obs, _ = env.reset(seed=seed, options=options)
         positions = env.privileged_state().block_pos
         blocks_xy = {c: np.asarray(positions[c][:2]) for c in COLORS}
-        torch.manual_seed(noise_seed)
+        policy.seed(noise_seed)
         policy.reset()
         chunk = policy.predict_chunk(obs)
         policy_xy[target] = kinematics.xy(chunk[CHUNK_STEPS - 1][:7])

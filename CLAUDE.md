@@ -112,4 +112,8 @@ Seeds 0-99 were used to develop the scripted expert; evaluate it on seeds from 1
 - Editing code while a long run is going marks its result dirty; edit docs only, or re-run.
 - torchcodec cannot load without system FFmpeg; datasets decode with PyAV (`video_backend="pyav"`).
 - `nvidia-smi` is at `/usr/lib/wsl/lib/nvidia-smi`, not on PATH.
+- CI installs no `train` group, so modules that tests import without `importorskip` must not
+  import torch or LeRobot at module level. Check before pushing in a separate environment:
+  `UV_PROJECT_ENVIRONMENT=/tmp/ci-venv uv sync --locked --no-group train`, then
+  `UV_PROJECT_ENVIRONMENT=/tmp/ci-venv uv run --no-sync pytest`.
 - No sudo on the dev machine: do not depend on apt packages.

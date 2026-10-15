@@ -52,6 +52,10 @@ class PolicyRunner:
         """Whether the next ``act`` call starts a new chunk and so reads the images."""
         return self._calls % self.config.n_action_steps == 0
 
+    def seed(self, seed: int) -> None:
+        """Seed the noise SmolVLA samples its action chunks from."""
+        torch.manual_seed(seed)
+
     def reset(self) -> None:
         """Clear the action queue; call at the start of every episode."""
         self.policy.reset()
