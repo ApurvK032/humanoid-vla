@@ -112,6 +112,10 @@ class SortEnv(gym.Env):
         )
 
         self._renderer: CameraRenderer | None = None
+        # Policies that act in chunks read images only when a chunk starts; evaluation loops set
+        # this to False for the steps in between to skip rendering (observations then carry no
+        # "images" entry).
+        self.render_images = True
         self._task: SortTask | None = None
         self._time = 0.0
         self._arm_target = np.asarray(cfg.home_arm, dtype=float)
@@ -241,7 +245,7 @@ class SortEnv(gym.Env):
             "state": self.data.qpos[self._state_adr].astype(np.float32),
             "instruction": self.task.instruction,
         }
-        if self.config.cameras:
+        if self.config.cameras and self.render_images:
             if self._renderer is None:
                 self._renderer = CameraRenderer(
                     self.model, *self.config.image_hw, quality=self.config.render_quality

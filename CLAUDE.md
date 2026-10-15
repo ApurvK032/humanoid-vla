@@ -30,13 +30,19 @@ src/humanoid_vla/
   envs/outcome.py     outcome labels (success, wrong bin, wrong object, dropped, ...)
   envs/sort.py        Gymnasium sorting environment: action interface, observations, judging
   policies/expert.py  scripted expert (privileged state, IK, waits for arrival, randomized())
+  policies/smolvla.py SmolVLA at a pinned Hub revision; optional float32 action expert
+  policies/lerobot_train.py  lerobot-train with project options (float32 expert, cameras)
+  policies/runner.py  runs a fine-tuned checkpoint in closed loop, one action per control step
   data/scenarios.py   frozen split seed ranges, balanced and paired instructions
   data/recording.py   LeRobot features (the action contract) and episode recording
   data/replay.py      replaying recorded actions to verify alignment and semantics
-  policies/smolvla.py SmolVLA at a pinned Hub revision with this project's features
+  evaluation/rollout.py  one closed-loop episode: outcome, first block lifted, final bins
+  evaluation/summary.py  success with Wilson interval, instruction following, paired layouts
   utils/provenance.py git commit, versions and GPU recorded with every result file
   utils/stats.py      Wilson intervals for success rates
-scripts/              entry points (fetch_assets, check_*, run_expert); logic belongs in src/
+  utils/media.py      small GIFs for the documentation
+scripts/              entry points (check_*, run_expert, collect_dataset, train_smolvla,
+                      eval_policy, ...); logic belongs in src/
 tests/                behavior and interface tests
 docs/                 plan, roadmap, decisions, runbook, reports/, media/
 results/              small committed measurement files with provenance
@@ -44,9 +50,9 @@ third_party/          fetched upstream assets (gitignored)
 outputs/              generated images, videos, logs, datasets, checkpoints (gitignored)
 ```
 
-Planned packages as milestones land: `policies/` rollout and adapters, `evaluation/`
-(perturbations, scenario replay, metrics). Datasets live in `data/datasets/` (gitignored), each
-with a `manifest.json`; their meaning is fixed by `docs/ACTION_CONTRACT.md`.
+Planned as milestones land: perturbations and scenario replay in `evaluation/`. Datasets live in
+`data/datasets/` (gitignored), each with a `manifest.json`; their meaning is fixed by
+`docs/ACTION_CONTRACT.md`. Training checkpoints go to `outputs/train/<run>/`.
 
 ## Commands
 
@@ -90,11 +96,24 @@ Seeds 0-99 were used to develop the scripted expert; evaluate it on seeds from 1
   when contexts are garbage-collected at interpreter exit.
 - Under WSL2, CUDA allocations beyond the 12 GB of VRAM do not raise out-of-memory errors: the
   driver spills into system memory and training slows about 20x. Compare peak reserved memory
-  with VRAM explicitly (`scripts/check_smolvla.py` does).
+  with VRAM explicitly (`scripts/check_smolvla.py` does). Training with `--train-vlm` uses
+  10.8 GB of the GPU: run nothing else on the GPU meanwhile (a 1-minute probe beside it stalled
+  the run for good; it had to restart). Expert-only training (7.7 GB) leaves room for a probe.
 - LeRobot loads `smolvla_base` with the VLM and the action expert in bfloat16; the expert's
-  trainable weights and AdamW state are bfloat16 too.
+  trainable weights and AdamW state are bfloat16 too, and small updates round away.
+  `train_smolvla.py --float32-expert` trains it in float32; the runner detects such checkpoints.
+- A dictionary passed as `--policy.input_features` is merged into the base model's SO-100
+  features rather than replacing them; select cameras with `train_smolvla.py --cameras`.
+- Policy inference measured while a training run shares the GPU is about 3x slower; take timings
+  on an idle GPU.
+- Renders of the same state can differ by one intensity level in a few pixels, so closed-loop
+  evaluations are not bit-for-bit repeatable even with seeded policy noise; compare success rates.
 - The environment executes float32 actions so datasets replay bit-for-bit; keep it that way.
 - Editing code while a long run is going marks its result dirty; edit docs only, or re-run.
 - torchcodec cannot load without system FFmpeg; datasets decode with PyAV (`video_backend="pyav"`).
 - `nvidia-smi` is at `/usr/lib/wsl/lib/nvidia-smi`, not on PATH.
+- CI installs no `train` group, so modules that tests import without `importorskip` must not
+  import torch or LeRobot at module level. Check before pushing in a separate environment:
+  `UV_PROJECT_ENVIRONMENT=/tmp/ci-venv uv sync --locked --no-group train`, then
+  `UV_PROJECT_ENVIRONMENT=/tmp/ci-venv uv run --no-sync pytest`.
 - No sudo on the dev machine: do not depend on apt packages.

@@ -37,6 +37,8 @@ only), use `uv sync --no-group train`.
 | `uv run python scripts/run_expert.py --episodes 100 --videos 1` | `make expert-eval` | M1: scripted-expert success rate on held-out seeds; videos in `outputs/m1/` |
 | `uv run python scripts/collect_dataset.py --name NAME --split train --layouts 225` | | M2: record expert demonstrations as a LeRobot dataset in `data/datasets/NAME/train/` |
 | `uv run python scripts/replay_dataset.py --name NAME --split train` | | M2: check a dataset loads, decodes, matches its checksums and replays exactly |
+| `uv run python scripts/train_smolvla.py --dataset NAME --run RUN --steps 20000` | | M3: fine-tune SmolVLA (about 3.5 h); checkpoints in `outputs/train/RUN/`; `--float32-expert`, `--cameras=head` |
+| `uv run python scripts/eval_policy.py --checkpoint outputs/train/RUN/checkpoints/020000/pretrained_model --layouts 50` | | M3: closed-loop evaluation on development layouts; `--videos N` and `--gif PATH` for media |
 
 Add `--save` to a check or evaluation script to write its measurements, with provenance, to
 `results/`. Run it from a clean commit: results record whether the code was modified.

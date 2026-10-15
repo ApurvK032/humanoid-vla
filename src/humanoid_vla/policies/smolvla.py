@@ -5,13 +5,17 @@ action vectors are zero-padded to 32 inside the model, so the pretrained project
 unchanged for any dimension up to 32; camera inputs are matched by feature name.
 """
 
-from collections.abc import Sequence
+import contextlib
+from collections.abc import Iterator, Sequence
+from pathlib import Path
 
 import torch
 from lerobot.configs import FeatureType, PolicyFeature, PreTrainedConfig
 from lerobot.policies.smolvla.configuration_smolvla import SmolVLAConfig
 from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
+from lerobot.policies.smolvla.smolvlm_with_expert import SmolVLMWithExpertModel
 from lerobot.utils.constants import ACTION, OBS_IMAGES, OBS_STATE
+from safetensors import safe_open
 
 SMOLVLA_REPO = "lerobot/smolvla_base"
 SMOLVLA_REVISION = "5e8d12a6e2975b0e5e5fce7c8caf47c371d257b6"  # Hub commit of 2026-10-06
@@ -62,3 +66,36 @@ def load_smolvla(
     config.pretrained_revision = SMOLVLA_REVISION
     policy = SmolVLAPolicy.from_pretrained(SMOLVLA_REPO, config=config, revision=SMOLVLA_REVISION)
     return policy.to(torch.device(device))
+
+
+@contextlib.contextmanager
+def float32_action_expert() -> Iterator[None]:
+    """Build SmolVLA's action expert with float32 weights while this context is active.
+
+    LeRobot builds the expert in the VLM's dtype, bfloat16, and its optimizer updates those weights
+    directly, so an update smaller than half the spacing between bfloat16 values near a weight
+    (0.2 to 0.4% of the weight) rounds away. In float32 the weights, their gradients and AdamW's
+    state keep small updates. The VLM stays in bfloat16; LeRobot's attention code casts between the
+    two. A checkpoint trained this way stores the expert in float32 (``stored_expert_dtype``) and
+    runs as trained only when built inside this context too.
+    """
+    original = SmolVLMWithExpertModel.__init__
+
+    def init(self: SmolVLMWithExpertModel, *args, **kwargs) -> None:
+        original(self, *args, **kwargs)
+        self.lm_expert.float()
+
+    SmolVLMWithExpertModel.__init__ = init
+    try:
+        yield
+    finally:
+        SmolVLMWithExpertModel.__init__ = original
+
+
+def stored_expert_dtype(checkpoint: Path) -> str:
+    """Safetensors dtype of the action expert's weights in a checkpoint, e.g. "BF16" or "F32"."""
+    with safe_open(checkpoint / "model.safetensors", "pt") as weights:
+        for key in weights.keys():  # noqa: SIM118 (safe_open is not a mapping)
+            if ".lm_expert." in key and key.endswith("self_attn.q_proj.weight"):
+                return weights.get_slice(key).get_dtype()
+    raise ValueError(f"{checkpoint} has no SmolVLA action expert")

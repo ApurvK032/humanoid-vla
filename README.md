@@ -15,9 +15,11 @@ camera (left) and the head camera a policy will see (right).*
 500 held-out layouts ([M1 report](docs/reports/m1-scripted-expert.md)), and its demonstrations
 are recorded as a LeRobot dataset of 300 training episodes with head and wrist
 cameras, every one of which replays exactly ([M2 report](docs/reports/m2-dataset.md)). SmolVLA
-fine-tuning fits on one RTX 4070 ([M0 report](docs/reports/m0-feasibility.md)). Next is
-Milestone 3: fine-tuning SmolVLA on the dataset. There is no trained policy yet. Numbers,
-videos and claims are added only once measured.
+fine-tuning fits on one RTX 4070 ([M0 report](docs/reports/m0-feasibility.md)). Milestone 3,
+fine-tuning SmolVLA on the dataset, is in progress: training and closed-loop evaluation run end
+to end, and a pilot policy trained on 55 episodes succeeded in only 2 of 17 episodes on its own
+training layouts. The first full training run is under way. Numbers, videos and claims are
+added only once measured.
 
 ## Quick start
 

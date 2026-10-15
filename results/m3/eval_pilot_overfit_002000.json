@@ -1,0 +1,385 @@
+{
+  "provenance": {
+    "started_utc": "2026-10-14T03:50:57+00:00",
+    "git": {
+      "commit": "1245399169b0b81ed55126c61ffad26dcb53b959",
+      "dirty": false
+    },
+    "python": "3.12.14",
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "wsl": true,
+    "packages": {
+      "mujoco": "3.14.0",
+      "numpy": "2.2.6",
+      "torch": "2.11.0",
+      "lerobot": "0.6.1",
+      "transformers": "5.5.4",
+      "peft": "0.21.2"
+    },
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 4070",
+      "memory_total": "12282 MiB",
+      "driver": "591.86"
+    }
+  },
+  "checkpoint": {
+    "run": "pilot_overfit",
+    "step": "002000",
+    "trained_at_commit": "358a28740856b864289f9d4ef5dfbd00ad93fac1",
+    "dataset": "g1_sort_pilot",
+    "dataset_manifest_sha256": "5eecf109d495f5e5538c25a9c252ff78aff06f8ebea5b4a04e198dac9f5e4676"
+  },
+  "evaluation": {
+    "split": "train",
+    "layouts": [
+      0,
+      10
+    ],
+    "n_action_steps": 10,
+    "cameras": [
+      "head",
+      "wrist"
+    ]
+  },
+  "summary": {
+    "episodes": 17,
+    "successes": 2,
+    "success_rate": 0.1176,
+    "success_rate_wilson95": [
+      0.0329,
+      0.3434
+    ],
+    "outcomes": {
+      "timeout": 10,
+      "wrong_object": 5,
+      "success": 2
+    },
+    "picked_instructed_block_first": 0.1765,
+    "lifted_nothing": 9,
+    "by_instruction": {
+      "blue->left": {
+        "successes": 1,
+        "episodes": 5
+      },
+      "blue->right": {
+        "successes": 0,
+        "episodes": 2
+      },
+      "green->left": {
+        "successes": 0,
+        "episodes": 2
+      },
+      "green->right": {
+        "successes": 0,
+        "episodes": 2
+      },
+      "red->left": {
+        "successes": 1,
+        "episodes": 4
+      },
+      "red->right": {
+        "successes": 0,
+        "episodes": 2
+      }
+    },
+    "paired_layouts": {
+      "pairs": 7,
+      "both_picked_instructed_block": 0,
+      "both_succeeded": 0
+    },
+    "mean_inference_ms": 181.8,
+    "mean_episode_s": 20.33,
+    "wall_time_s": 233.0
+  },
+  "episodes": [
+    {
+      "scenario_id": "train-100000-blue-right",
+      "seed": 100000,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": "blue",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 188.7
+    },
+    {
+      "scenario_id": "train-100001-red-left",
+      "seed": 100001,
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 181.0
+    },
+    {
+      "scenario_id": "train-100001-blue-left",
+      "seed": 100001,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 181.2
+    },
+    {
+      "scenario_id": "train-100002-green-right",
+      "seed": 100002,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 5.84,
+      "first_lifted": "blue",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "right"
+      },
+      "chunks": 15,
+      "inference_ms": 181.2
+    },
+    {
+      "scenario_id": "train-100002-blue-left",
+      "seed": 100002,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 20.76,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 52,
+      "inference_ms": 181.5
+    },
+    {
+      "scenario_id": "train-100003-green-left",
+      "seed": 100003,
+      "target": "green",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 181.5
+    },
+    {
+      "scenario_id": "train-100003-red-left",
+      "seed": 100003,
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 181.0
+    },
+    {
+      "scenario_id": "train-100004-blue-left",
+      "seed": 100004,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 8.44,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 22,
+      "inference_ms": 181.1
+    },
+    {
+      "scenario_id": "train-100005-red-right",
+      "seed": 100005,
+      "target": "red",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 181.7
+    },
+    {
+      "scenario_id": "train-100006-red-left",
+      "seed": 100006,
+      "target": "red",
+      "destination": "left",
+      "outcome": "success",
+      "duration_s": 12.88,
+      "first_lifted": "red",
+      "picked_target": true,
+      "final_bins": {
+        "red": "left",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 33,
+      "inference_ms": 180.7
+    },
+    {
+      "scenario_id": "train-100006-green-left",
+      "seed": 100006,
+      "target": "green",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 181.3
+    },
+    {
+      "scenario_id": "train-100007-red-right",
+      "seed": 100007,
+      "target": "red",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 181.9
+    },
+    {
+      "scenario_id": "train-100007-blue-right",
+      "seed": 100007,
+      "target": "blue",
+      "destination": "right",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 181.6
+    },
+    {
+      "scenario_id": "train-100008-blue-left",
+      "seed": 100008,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "wrong_object",
+      "duration_s": 13.16,
+      "first_lifted": "green",
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": "left",
+        "blue": null
+      },
+      "chunks": 33,
+      "inference_ms": 181.2
+    },
+    {
+      "scenario_id": "train-100008-red-left",
+      "seed": 100008,
+      "target": "red",
+      "destination": "left",
+      "outcome": "timeout",
+      "duration_s": 25.0,
+      "first_lifted": null,
+      "picked_target": false,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": null
+      },
+      "chunks": 63,
+      "inference_ms": 181.6
+    },
+    {
+      "scenario_id": "train-100009-green-right",
+      "seed": 100009,
+      "target": "green",
+      "destination": "right",
+      "outcome": "wrong_object",
+      "duration_s": 13.84,
+      "first_lifted": "red",
+      "picked_target": false,
+      "final_bins": {
+        "red": "right",
+        "green": null,
+        "blue": null
+      },
+      "chunks": 35,
+      "inference_ms": 182.9
+    },
+    {
+      "scenario_id": "train-100009-blue-left",
+      "seed": 100009,
+      "target": "blue",
+      "destination": "left",
+      "outcome": "success",
+      "duration_s": 20.64,
+      "first_lifted": "blue",
+      "picked_target": true,
+      "final_bins": {
+        "red": null,
+        "green": null,
+        "blue": "left"
+      },
+      "chunks": 52,
+      "inference_ms": 180.7
+    }
+  ]
+}
