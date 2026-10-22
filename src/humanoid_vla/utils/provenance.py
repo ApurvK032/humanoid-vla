@@ -2,6 +2,7 @@
 
 import datetime
 import json
+import os
 import platform
 import shutil
 import subprocess
@@ -57,9 +58,17 @@ def gpu_info() -> dict[str, str] | None:
     return {"name": name, "memory_total": memory, "driver": driver}
 
 
+def slurm_job() -> dict[str, str] | None:
+    """The Slurm job a run is part of (on a cluster such as MSI), or None outside one."""
+    if "SLURM_JOB_ID" not in os.environ:
+        return None
+    names = ["SLURM_JOB_ID", "SLURM_JOB_PARTITION", "SLURMD_NODENAME", "CUDA_VISIBLE_DEVICES"]
+    return {name.lower(): os.environ[name] for name in names if name in os.environ}
+
+
 def provenance() -> dict[str, Any]:
     """Capture at the start of a run, so later working-tree edits are not attributed to it."""
-    return {
+    started = {
         "started_utc": datetime.datetime.now(datetime.UTC).isoformat(timespec="seconds"),
         "git": git_state(),
         "python": platform.python_version(),
@@ -68,6 +77,9 @@ def provenance() -> dict[str, Any]:
         "packages": package_versions(),
         "gpu": gpu_info(),
     }
+    if job := slurm_job():
+        started["slurm"] = job
+    return started
 
 
 def write_result(path: Path, result: dict[str, Any], started: dict[str, Any]) -> None:

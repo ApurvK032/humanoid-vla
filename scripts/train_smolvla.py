@@ -22,42 +22,16 @@ results/m3/train_<run>.json.
 """
 
 import argparse
-import hashlib
 import json
-import re
 import shutil
-import subprocess
 import sys
-import time
 
 from huggingface_hub import HfApi, snapshot_download
 
 from humanoid_vla.paths import OUTPUTS_DIR, REPO_ROOT, RESULTS_DIR
 from humanoid_vla.policies.smolvla import SMOLVLA_REPO, SMOLVLA_REVISION
+from humanoid_vla.policies.training import RecordedDataset, parse_log, run_training
 from humanoid_vla.utils.provenance import provenance, write_result
-
-DATA_ROOT = REPO_ROOT / "data" / "datasets"
-# LeRobot logs a line like "step:1K smpl:32K ep:170 epch:0.57 loss:0.123 grdn:4.5 ..." every
-# log_freq steps. Its step counts are rounded ("1K" covers 1000 to 1499), so steps are numbered
-# by the line's position instead.
-LOG_LINE = re.compile(r"step:\S+ smpl:\S+ ep:\S+ epch:(\S+) (.*)")
-METRIC = re.compile(r"(\w+):(\S+)")
-
-
-def parse_log(lines: list[str], log_freq: int) -> list[dict]:
-    rows = []
-    for line in lines:
-        match = LOG_LINE.search(line)
-        if not match:
-            continue
-        row = {"step": (len(rows) + 1) * log_freq, "epoch": float(match.group(1))}
-        for name, value in METRIC.findall(match.group(2)):
-            try:
-                row[name] = float(value)
-            except ValueError:
-                continue
-        rows.append(row)
-    return rows
 
 
 def main() -> int:
@@ -82,15 +56,8 @@ def main() -> int:
     args = parser.parse_args()
     started = provenance()
 
-    dataset_root = DATA_ROOT / args.dataset / args.split
-    manifest_path = dataset_root / "manifest.json"
-    manifest = json.loads(manifest_path.read_text())
-    info = json.loads((dataset_root / "meta" / "info.json").read_text())
-    dataset_cameras = [
-        key.removeprefix("observation.images.")
-        for key in info["features"]
-        if key.startswith("observation.images.")
-    ]
+    dataset = RecordedDataset.load(args.dataset, args.split)
+    dataset_cameras = dataset.cameras
     cameras = args.cameras.split(",") if args.cameras else dataset_cameras
     if unknown := sorted(set(cameras) - set(dataset_cameras)):
         print(f"error: the dataset has no camera {unknown}", file=sys.stderr)
@@ -120,8 +87,8 @@ def main() -> int:
         "--policy.push_to_hub=false",
         "--policy.device=cuda",
         f"--policy.train_expert_only={str(not args.train_vlm).lower()}",
-        f"--dataset.repo_id={manifest['dataset']['repo_id']}",
-        f"--dataset.root={dataset_root}",
+        f"--dataset.repo_id={dataset.manifest['dataset']['repo_id']}",
+        f"--dataset.root={dataset.root}",
         "--dataset.video_backend=pyav",
         f"--output_dir={output_dir}",
         f"--job_name={args.run}",
@@ -136,28 +103,8 @@ def main() -> int:
     ]
     print(" ".join(command), flush=True)
 
-    # lerobot-train creates output_dir itself, so the log lives beside it until the run ends.
-    log_path = output_dir.with_suffix(".log")
-    lines: list[str] = []
-    start = time.perf_counter()
-    with log_path.open("w") as log:
-        process = subprocess.Popen(
-            ["uv", "run", "--no-sync", *command],
-            cwd=REPO_ROOT,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
-        )
-        assert process.stdout is not None
-        for line in process.stdout:
-            log.write(line)
-            lines.append(line)
-            if LOG_LINE.search(line):
-                print(line.rstrip(), flush=True)
-        returncode = process.wait()
-    wall_s = time.perf_counter() - start
-    if output_dir.exists():
-        shutil.move(log_path, output_dir / "train.log")
+    attempt = run_training(command, output_dir)
+    lines, returncode, wall_s = attempt.lines, attempt.returncode, attempt.wall_time_s
 
     if returncode != 0:
         print("".join(lines[-30:]), file=sys.stderr)
@@ -169,11 +116,7 @@ def main() -> int:
         "command": command,
         "base_model": {"repo": SMOLVLA_REPO, "revision": SMOLVLA_REVISION},
         "vlm_backbone": {"repo": vlm_name, "revision_at_run": vlm_revision},
-        "dataset": {
-            **manifest["dataset"],
-            "manifest_sha256": hashlib.sha256(manifest_path.read_bytes()).hexdigest(),
-            "recorded_at_commit": manifest["provenance"]["git"]["commit"],
-        },
+        "dataset": dataset.describe(),
         "training": {
             "steps": args.steps,
             "batch_size": args.batch_size,
