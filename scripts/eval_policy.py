@@ -1,10 +1,11 @@
-"""Milestone 3: evaluate a fine-tuned SmolVLA checkpoint in closed loop.
+"""Milestones 3 and π0.5: evaluate a fine-tuned SmolVLA or π0.5 checkpoint in closed loop.
 
 Runs the policy on scenarios from a split (development by default; test layouts are reserved for
 final evaluations), and reports the success rate with a 95% Wilson interval, how often the
 policy lifted the instructed block first, and, on layouts used with two different instructions,
 whether its behavior changed with the instruction. Videos (scene, head and wrist cameras side by
-side) go to outputs/m3/; ``--gif`` also writes the first one as a small GIF.
+side) go to outputs/m3/ (π0.5: outputs/pi05/); ``--gif`` also writes the first one as a small GIF.
+A π0.5 checkpoint trained in float32 needs ``--dtype bfloat16`` to fit the RTX 4070.
 
     uv run python scripts/eval_policy.py \\
         --checkpoint outputs/train/RUN/checkpoints/020000/pretrained_model \\
@@ -54,8 +55,13 @@ def main() -> int:
     parser.add_argument("--n-action-steps", type=int, default=10)
     parser.add_argument("--videos", type=int, default=0, help="record the first N episodes")
     parser.add_argument("--gif", type=Path, help="also write the first video as a small GIF")
+    parser.add_argument(
+        "--dtype", choices=["float32", "bfloat16"], help="π0.5 only: run in this precision"
+    )
     parser.add_argument("--name", help="results name (default: run and step)")
-    parser.add_argument("--save", action="store_true", help="write results/m3/eval_<name>.json")
+    parser.add_argument(
+        "--save", action="store_true", help="write results/{m3,pi05}/eval_<name>.json"
+    )
     args = parser.parse_args()
     started = provenance()
     if args.split == "test":
@@ -63,12 +69,13 @@ def main() -> int:
 
     checkpoint = args.checkpoint.resolve()
     run_dir, step = checkpoint.parents[2], checkpoint.parent.name
-    runner = PolicyRunner(checkpoint, n_action_steps=args.n_action_steps)
+    runner = PolicyRunner(checkpoint, n_action_steps=args.n_action_steps, dtype=args.dtype)
+    milestone = "pi05" if runner.policy_type == "pi05" else "m3"
     h, w = runner.config.image_features[next(iter(runner.config.image_features))].shape[1:]
     env = SortEnv(SortEnvConfig(cameras=tuple(runner.cameras), image_hw=(h, w)))
 
     scenarios = make_scenarios(args.split, args.layouts, args.first_layout)
-    video_dir = OUTPUTS_DIR / "m3"
+    video_dir = OUTPUTS_DIR / milestone
     video_dir.mkdir(parents=True, exist_ok=True)
     rows = []
     start = time.perf_counter()
@@ -123,15 +130,25 @@ def main() -> int:
     if args.save:
         manifest_path = run_dir / "run_manifest.json"
         run = json.loads(manifest_path.read_text()) if manifest_path.exists() else {}
+        # A π0.5 run keeps provenance per attempt (it resumes across cluster jobs).
+        trained = run.get("provenance") or next(iter(run.get("attempts", [])), {}).get("provenance")
+        checkpoint_info = {
+            "run": run_dir.name,
+            "step": step,
+            "trained_at_commit": (trained or {}).get("git", {}).get("commit"),
+            "dataset": run.get("dataset", {}).get("name"),
+            "dataset_manifest_sha256": run.get("dataset", {}).get("manifest_sha256"),
+        }
+        if runner.policy_type == "smolvla":
+            checkpoint_info["action_expert_weights"] = (
+                "float32" if runner.float32_expert else "bfloat16"
+            )
+        else:
+            checkpoint_info["policy"] = runner.policy_type
+            checkpoint_info["setup"] = run.get("training", {}).get("setup")
+            checkpoint_info["weights"] = runner.weights
         result = {
-            "checkpoint": {
-                "run": run_dir.name,
-                "step": step,
-                "trained_at_commit": run.get("provenance", {}).get("git", {}).get("commit"),
-                "dataset": run.get("dataset", {}).get("name"),
-                "dataset_manifest_sha256": run.get("dataset", {}).get("manifest_sha256"),
-                "action_expert_weights": "float32" if runner.float32_expert else "bfloat16",
-            },
+            "checkpoint": checkpoint_info,
             "evaluation": {
                 "split": args.split,
                 "layouts": [args.first_layout, args.first_layout + args.layouts],
@@ -143,7 +160,7 @@ def main() -> int:
             "episodes": rows,
         }
         name = args.name or f"{run_dir.name}_{step}"
-        path = RESULTS_DIR / "m3" / f"eval_{name}.json"
+        path = RESULTS_DIR / milestone / f"eval_{name}.json"
         write_result(path, result, started)
         print(f"Saved {path.relative_to(REPO_ROOT)}")
     return 0

@@ -34,14 +34,22 @@ def main() -> int:
     parser.add_argument("--split", choices=sorted(SPLIT_START), default="dev")
     parser.add_argument("--layouts", type=int, default=20)
     parser.add_argument("--device", default="cuda")
+    parser.add_argument(
+        "--dtype", choices=["float32", "bfloat16"], help="π0.5 only: run in this precision"
+    )
     parser.add_argument("--name", help="results name (default: run and step)")
-    parser.add_argument("--save", action="store_true", help="write results/m3/probe_<name>.json")
+    parser.add_argument(
+        "--save", action="store_true", help="write results/{m3,pi05}/probe_<name>.json"
+    )
     args = parser.parse_args()
     started = provenance()
 
     checkpoint = args.checkpoint.resolve()
     run_dir, step = checkpoint.parents[2], checkpoint.parent.name
-    runner = PolicyRunner(checkpoint, n_action_steps=CHUNK_STEPS, device=args.device)
+    runner = PolicyRunner(
+        checkpoint, n_action_steps=CHUNK_STEPS, device=args.device, dtype=args.dtype
+    )
+    milestone = "pi05" if runner.policy_type == "pi05" else "m3"
     h, w = runner.config.image_features[next(iter(runner.config.image_features))].shape[1:]
     env = SortEnv(SortEnvConfig(cameras=tuple(runner.cameras), image_hw=(h, w)))
 
@@ -92,7 +100,7 @@ def main() -> int:
     )
     if args.save:
         result = {
-            "checkpoint": {"run": run_dir.name, "step": step},
+            "checkpoint": {"run": run_dir.name, "step": step, "weights": runner.weights},
             "probe": {
                 "split": args.split,
                 "layouts": [0, args.layouts],
@@ -104,7 +112,7 @@ def main() -> int:
             "layouts": rows,
         }
         name = args.name or f"{run_dir.name}_{step}"
-        path = RESULTS_DIR / "m3" / f"probe_{name}.json"
+        path = RESULTS_DIR / milestone / f"probe_{name}.json"
         write_result(path, result, started)
         print(f"Saved {path.relative_to(REPO_ROOT)}")
     return 0

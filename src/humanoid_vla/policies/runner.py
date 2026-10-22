@@ -1,12 +1,14 @@
-"""Closed-loop execution of a fine-tuned SmolVLA checkpoint.
+"""Closed-loop execution of a fine-tuned SmolVLA or π0.5 checkpoint.
 
 The runner converts environment observations into the batch format LeRobot's dataset produced
 during training (CHW float images in [0, 1], float32 state, the instruction as the task), runs
 the checkpoint's own pre- and post-processors (tokenizing, normalization, unnormalization), and
 returns one action per control step. The policy predicts a chunk of actions and executes
 ``n_action_steps`` of them before it needs a new observation; ``needs_observation`` tells the
-caller when, so cameras only have to render on those steps. A checkpoint trained with a float32
-action expert is built with one, so it runs as it was trained.
+caller when, so cameras only have to render on those steps. A SmolVLA checkpoint trained with a
+float32 action expert is built with one, so it runs as it was trained. A π0.5 checkpoint runs in the
+precision it was trained in unless ``dtype`` says otherwise: its float32 weights (13 GB) do not fit
+the RTX 4070, so it is evaluated there in bfloat16, the precision openpi serves π0.5 in.
 """
 
 import contextlib
@@ -17,6 +19,7 @@ import numpy as np
 import torch
 from lerobot.configs import PreTrainedConfig
 from lerobot.policies import make_pre_post_processors
+from lerobot.policies.pi05.modeling_pi05 import PI05Policy
 from lerobot.policies.smolvla.modeling_smolvla import SmolVLAPolicy
 from lerobot.utils.constants import OBS_STATE
 
@@ -26,7 +29,11 @@ from humanoid_vla.policies.smolvla import float32_action_expert, stored_expert_d
 
 class PolicyRunner:
     def __init__(
-        self, checkpoint: Path, n_action_steps: int | None = None, device: str = "cuda"
+        self,
+        checkpoint: Path,
+        n_action_steps: int | None = None,
+        device: str = "cuda",
+        dtype: str | None = None,
     ) -> None:
         config = PreTrainedConfig.from_pretrained(checkpoint)
         config.device = device
@@ -35,9 +42,23 @@ class PolicyRunner:
                 raise ValueError(f"n_action_steps must be in [1, {config.chunk_size}]")
             config.n_action_steps = n_action_steps
         self.config = config
-        self.float32_expert = stored_expert_dtype(checkpoint) == "F32"
-        with float32_action_expert() if self.float32_expert else contextlib.nullcontext():
-            self.policy = SmolVLAPolicy.from_pretrained(checkpoint, config=config)
+        self.policy_type = config.type
+        self.float32_expert = False
+        if config.type == "smolvla":
+            if dtype is not None:
+                raise ValueError("dtype applies to π0.5 checkpoints only")
+            self.float32_expert = stored_expert_dtype(checkpoint) == "F32"
+            with float32_action_expert() if self.float32_expert else contextlib.nullcontext():
+                self.policy = SmolVLAPolicy.from_pretrained(checkpoint, config=config)
+            self.weights = "action expert " + ("float32" if self.float32_expert else "bfloat16")
+        elif config.type == "pi05":
+            trained_dtype = config.dtype
+            if dtype is not None:
+                config.dtype = dtype
+            self.policy = PI05Policy.from_pretrained(checkpoint, config=config)
+            self.weights = f"trained in {trained_dtype}, run in {config.dtype}"
+        else:
+            raise ValueError(f"unsupported policy type {config.type!r} in {checkpoint}")
         self.policy.eval()
         self.preprocess, self.postprocess = make_pre_post_processors(
             config,
@@ -53,7 +74,7 @@ class PolicyRunner:
         return self._calls % self.config.n_action_steps == 0
 
     def seed(self, seed: int) -> None:
-        """Seed the noise SmolVLA samples its action chunks from."""
+        """Seed the noise the policy samples its action chunks from."""
         torch.manual_seed(seed)
 
     def reset(self) -> None:
