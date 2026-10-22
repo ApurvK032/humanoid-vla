@@ -236,6 +236,22 @@ loss (0.011 against 0.007) and succeeded less often in closed loop: 29 against 4
 learnable; float32 weights make the final policy more reliable. One run per condition, so the
 size of the gap is uncertain.
 
+## D-028 π0.5 trained on MSI A40s, evaluated on the RTX 4070 (2026-10-19)
+
+π0.5 (3.3B parameters: PaliGemma 2B plus a 300M action expert) does not fit the RTX 4070 for
+training, and the lab RTX 5090 is rarely free. It trains on MSI's 48 GB A40 or L40S GPUs under
+the group's allocation. Fully training it in float32 needs over 50 GB for weights, gradients and
+AdamW state alone, so two setups are compared, one per GPU in a single two-GPU job:
+`expert-float32` (the whole model in float32, vision-language model frozen, action expert
+trained: SmolVLA's best recipe, D-026 and D-027) and `full-bfloat16` (all weights trained in
+bfloat16 with gradient checkpointing, as LeRobot does when asked for bfloat16). MSI's GPU jobs
+stop after 24 hours, so runs save every 5,000 steps and resume from their latest checkpoint
+(`train_pi05.py --resume`); the job script queues its own successor and stops retrying a run
+that fails. Evaluation runs on the RTX 4070 with the same protocol as SmolVLA (D-024), so the
+renderer and the development layouts are the ones SmolVLA was measured on; π0.5's 13 GB of
+float32 weights do not fit there, so it runs in bfloat16, the precision openpi serves π0.5 in.
+Every MSI command is run by hand; coding agents do not connect to MSI.
+
 ## Open questions
 
 | Question | Decide in | Notes |
@@ -243,5 +259,5 @@ size of the gap is uncertain.
 | Does full pairing (v2) matter with the D-026 recipe | when GPU time allows | v1 data with the D-026 recipe answers it |
 | Policy cameras: head only, or head + wrist | M4 or later | Every M3 run used both; `--cameras=head` is ready. SmolVLA was pretrained with a top and a wrist camera |
 | Actions executed per chunk before observing again | M4 | Evaluations use 10 of 50 (0.4 s); compare a range alongside the observation-delay perturbation |
-| pi0.5 extension | after M4 | Planned on a lab RTX 5090 (32 GB) when free for several days: LeRobot 0.6.1 ships a PyTorch `pi05` policy; train with the VLM frozen or LoRA (openpi lists > 22.5 GB for LoRA), evaluate on the RTX 4070 |
+| π0.5: which fine-tuning setup | after the MSI runs | `expert-float32` against `full-bfloat16` (D-028); the bfloat16 caveat of D-027 applies to the second |
 | Project license | before release | Upstream code, models and assets are Apache-2.0 or BSD-3-Clause |

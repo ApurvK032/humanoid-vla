@@ -31,8 +31,10 @@ src/humanoid_vla/
   envs/sort.py        Gymnasium sorting environment: action interface, observations, judging
   policies/expert.py  scripted expert (privileged state, IK, waits for arrival, randomized())
   policies/smolvla.py SmolVLA at a pinned Hub revision; optional float32 action expert
+  policies/pi05.py    π0.5 at a pinned Hub revision; the two fine-tuning setups (D-028)
+  policies/training.py  running lerobot-train: dataset identity, logs, resume, run lock
   policies/lerobot_train.py  lerobot-train with project options (float32 expert, cameras)
-  policies/runner.py  runs a fine-tuned checkpoint in closed loop, one action per control step
+  policies/runner.py  runs a SmolVLA or π0.5 checkpoint in closed loop, one action per step
   data/scenarios.py   frozen split seed ranges, balanced and paired instructions
   data/recording.py   LeRobot features (the action contract) and episode recording
   data/replay.py      replaying recorded actions to verify alignment and semantics
@@ -43,7 +45,8 @@ src/humanoid_vla/
   utils/stats.py      Wilson intervals for success rates
   utils/media.py      small GIFs for the documentation
 scripts/              entry points (check_*, run_expert, collect_dataset, train_smolvla,
-                      eval_policy, ...); logic belongs in src/
+                      train_pi05, eval_policy, ...); logic belongs in src/
+scripts/msi/          Slurm job scripts for MSI, submitted by hand (RUNBOOK, "π0.5 on MSI")
 tests/                behavior and interface tests
 docs/                 plan, roadmap, decisions, runbook, reports/, media/
 results/              small committed measurement files with provenance
@@ -86,6 +89,9 @@ Seeds 0-99 were used to develop the scripted expert; evaluate it on seeds from 1
   results are reported.
 - **Keep docs current.** Tick tasks in `docs/ROADMAP.md` as they finish, and record each
   non-obvious choice in `docs/DECISIONS.md`.
+- **No agent access to MSI.** Agents never connect to the cluster, set up keys or shared SSH
+  connections, or run anything there. They write job scripts and give commands; the user runs
+  them and pastes the output back.
 
 ## Environment gotchas
 
@@ -113,6 +119,10 @@ Seeds 0-99 were used to develop the scripted expert; evaluate it on seeds from 1
 - Editing code while a long run is going marks its result dirty; edit docs only, or re-run.
 - torchcodec cannot load without system FFmpeg; datasets decode with PyAV (`video_backend="pyav"`).
 - `nvidia-smi` is at `/usr/lib/wsl/lib/nvidia-smi`, not on PATH.
+- π0.5's tokenizer comes from the gated `google/paligemma-3b-pt-224`: accept its license on the
+  Hub and run `uv run hf auth login` on each machine first. Its float32 weights (13 GB) do not
+  fit the 4070: evaluate with `--dtype bfloat16`. On MSI, checkpoints go to global scratch
+  (`outputs/train` is a link there), which is cleared of old files.
 - CI installs no `train` group, so modules that tests import without `importorskip` must not
   import torch or LeRobot at module level. Check before pushing in a separate environment:
   `UV_PROJECT_ENVIRONMENT=/tmp/ci-venv uv sync --locked --no-group train`, then

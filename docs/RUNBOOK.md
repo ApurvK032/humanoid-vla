@@ -40,12 +40,82 @@ only), use `uv sync --no-group train`.
 | `uv run python scripts/train_smolvla.py --dataset NAME --run RUN --steps 20000` | | M3: fine-tune SmolVLA (about 3.5 h per 20,000 steps); checkpoints in `outputs/train/RUN/`; `--float32-expert`, `--train-vlm`, `--cameras=head`; LeRobot options after `--`, e.g. `-- --policy.scheduler_decay_steps=50000` |
 | `uv run python scripts/eval_policy.py --checkpoint outputs/train/RUN/checkpoints/020000/pretrained_model --layouts 50` | | M3: closed-loop evaluation on development layouts; `--videos N` and `--gif PATH` for media |
 | `uv run python scripts/probe_instruction.py --checkpoint outputs/train/RUN/checkpoints/020000/pretrained_model` | | M3: open-loop probe of whether the first action chunk follows the named block (1 min on the GPU) |
+| `uv run python scripts/train_pi05.py --dataset NAME --run RUN --setup expert-float32 --resume` | | π0.5: fine-tune π0.5 (needs a 48 GB GPU; see "π0.5 on MSI"); `--setup full-bfloat16` trains all weights; `--resume` continues from the latest checkpoint |
 
 Add `--save` to a check or evaluation script to write its measurements, with provenance, to
 `results/`. Run it from a clean commit: results record whether the code was modified.
 
 Seeds 0-99 were used while developing the scripted expert, so its evaluations use seeds from
 1000 up (`--seed-start`, the default).
+
+## π0.5 on MSI
+
+π0.5 trains on MSI's 48 GB A40 or L40S GPUs and is evaluated on the RTX 4070 (D-028). Every
+command on MSI is run by hand in your own terminal; coding agents working on this repository do
+not connect to MSI. Logins need your password and Duo; `agate` below is an SSH alias for
+`agate.msi.umn.edu` with your MSI username.
+
+**Hugging Face access, once per machine.** π0.5's tokenizer comes from a gated repository: accept
+the license at <https://huggingface.co/google/paligemma-3b-pt-224>, create a Read token at
+<https://huggingface.co/settings/tokens>, and log in on every machine that trains or runs π0.5:
+`uv run hf auth login`.
+
+**Set up the checkout, once, on an MSI login node** (no GPU needed). Training checkpoints are
+13 GB or more each, so `outputs/train` points to global scratch, which MSI clears of old files:
+copy back what you keep.
+
+```bash
+curl -LsSf https://astral.sh/uv/0.12.21/install.sh | sh
+git clone https://github.com/ApurvK032/humanoid-vla.git ~/humanoid-vla
+cd ~/humanoid-vla && git checkout BRANCH_OR_COMMIT && uv sync --locked
+mkdir -p data/datasets outputs/slurm "/scratch.global/${USER}/humanoid-vla-train"
+ln -s "/scratch.global/${USER}/humanoid-vla-train" outputs/train
+uv run hf auth login
+```
+
+**Copy the dataset from the lab PC**, and check that both copies match: re-recording it on MSI
+would render different images.
+
+```bash
+rsync -a --info=progress2 ~/claude-code/humanoid/data/datasets/g1_sort_v2/ agate:humanoid-vla/data/datasets/g1_sort_v2/
+cd ~/claude-code/humanoid/data/datasets/g1_sort_v2 && find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum
+```
+
+Run the second command on MSI too (from `~/humanoid-vla/data/datasets/g1_sort_v2`); the two
+fingerprints must be identical.
+
+**Test job: memory and speed** (about 30 minutes; both setups, 200 steps each):
+
+```bash
+cd ~/humanoid-vla
+STEPS=200 SAVE_FREQ=200 MAX_ATTEMPTS=2 SAVE=0 sbatch --time=0:45:00 scripts/msi/train_pi05.sbatch pi05_test_expert:expert-float32 pi05_test_full:full-bfloat16
+```
+
+It also checks that a job may queue its own successor. Afterwards read
+`outputs/slurm/hvla-pi05-JOB.out`, the training logs `outputs/slurm/pi05_test_*-JOB.log` (`updt_s`
+is seconds per training step) and the GPU memory log `outputs/slurm/gpu-JOB.csv`, then delete
+the test runs: `rm -r outputs/train/pi05_test_*`.
+
+**Training job:** two runs side by side on two A40s, resumed across 24-hour jobs until done:
+
+```bash
+sbatch scripts/msi/train_pi05.sbatch pi05_v2_expert:expert-float32 pi05_v2_full:full-bfloat16
+```
+
+`STEPS=N sbatch ...` changes the length (default 30,000). Follow it with `squeue --me` and
+`tail -n 3 outputs/slurm/pi05_v2_*-*.log`; Slurm emails when a job ends or fails. A run that
+failed is marked `outputs/train/RUN.failed` and skipped by later jobs: read its log, fix the cause,
+delete the marker and submit again. The job script's header documents the rest.
+
+**Bring a checkpoint and the results back to the lab PC** and evaluate there, in bfloat16:
+
+```bash
+mkdir -p outputs/train/pi05_v2_expert/checkpoints/030000
+rsync -a --info=progress2 agate:humanoid-vla/outputs/train/pi05_v2_expert/checkpoints/030000/pretrained_model outputs/train/pi05_v2_expert/checkpoints/030000/
+rsync -a agate:humanoid-vla/outputs/train/pi05_v2_expert/run_manifest.json agate:humanoid-vla/outputs/train/pi05_v2_expert/train.log outputs/train/pi05_v2_expert/
+rsync -a agate:humanoid-vla/results/pi05/ results/pi05/
+uv run python scripts/eval_policy.py --checkpoint outputs/train/pi05_v2_expert/checkpoints/030000/pretrained_model --layouts 50 --dtype bfloat16 --save
+```
 
 ## Rendering backends
 

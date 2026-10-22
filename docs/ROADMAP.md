@@ -9,6 +9,7 @@ Living status of the project. The full plan, scope and rationale are in
 | M1 Scripted expert | done (2026-10-12) | Expert reliably picks and places blocks by physical contact across a declared region |
 | M2 Dataset | done (2026-10-13) | LeRobot dataset loads, and an episode replays through the same action interface |
 | M3 First policy | done (2026-10-15) | Fine-tuned SmolVLA completes held-out layouts in closed loop |
+| π0.5 extension | in progress | π0.5 fine-tuned on MSI and evaluated on the development layouts SmolVLA was measured on |
 | M4 Failure suite | next | Reproducible perturbed scenarios with categorized failures |
 | M5 Adaptation study | not started | Conditions A/B/C compared on the frozen test split |
 | M6 Release | not started | Verified install, demo checkpoint, dataset and model on the Hub, report, video |
@@ -62,6 +63,21 @@ Details and measurements: [M2 report](reports/m2-dataset.md). Contract:
 - [x] Pilot through the whole data path, then the v1 dataset
 - [x] Replay check: every recorded episode reproduces its joint states exactly and succeeds
 - [x] Config handling: dataclass configs serialized into manifests (no framework needed yet)
+
+## π0.5 extension
+
+Plan and setups: D-028; commands: [RUNBOOK](RUNBOOK.md#π05-on-msi).
+
+- [x] Training wrapper (`scripts/train_pi05.py`): pinned base model, two setups that fit a 48 GB
+  GPU, resume across 24-hour cluster jobs, a lock against two jobs training one run
+- [x] MSI job script (`scripts/msi/train_pi05.sbatch`): one run per GPU, queues its own successor,
+  marks failed runs instead of retrying them; tested with stand-ins for Slurm
+- [x] Runner, evaluation and probe accept π0.5 checkpoints (`--dtype bfloat16` on the RTX 4070)
+- [ ] Local check on the RTX 4070: a few training steps and inference on a tiny checkpoint
+- [ ] MSI: checkout, environment and dataset copy, verified by fingerprint
+- [ ] MSI test job: memory and step time of both setups on A40s
+- [ ] Training: `pi05_v2_expert` and `pi05_v2_full`
+- [ ] Closed-loop evaluation on the 50 development layouts (70 episodes), against SmolVLA's 51/70
 
 ## M3 First policy
 
