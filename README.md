@@ -286,8 +286,8 @@ humanoid with a dexterous hand, and to sensing and actuation errors.
 
 ## License
 
-Not chosen yet. It will be selected after reviewing the terms of the upstream code, models and
-assets.
+[MIT](LICENSE). Third-party code, models and assets keep their own licenses; see
+[THIRD_PARTY.md](THIRD_PARTY.md).
 
 ---
 
